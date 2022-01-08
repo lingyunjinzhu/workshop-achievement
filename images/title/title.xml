@@ -1,0 +1,9 @@
+<Atlas>
+<Texture filename="title.tex" />
+    <Elements>
+        <Element name="1.tex" u1="0" u2="0.5" v1="1" v2="0.875" />
+        <Element name="2.tex" u1="0" u2="0.5" v1="0.86914" v2="0.74414" />
+        <Element name="3.tex" u1="0" u2="0.5" v1="0.74023" v2="0.61523" />
+        <Element name="4.tex" u1="0" u2="0.5" v1="0.61132" v2="0.48632‬" />
+    </Elements>
+</Atlas>
