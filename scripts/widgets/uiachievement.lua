@@ -8,6 +8,9 @@ local HoverText = require "widgets/hoverer"
 local achievement_config = require("Achievement.achievement_config")
 local achievement_ability_config = require("Achievement.achievement_ability_config")
 local id2ability = achievement_ability_config.id2ability
+
+local modname = KnownModIndex:GetModActualName("New Achivement")
+local killAmountFinishAchievement = GetModConfigData("killamount_can_finish_achievement",modname)
 local uiachievement = Class(Widget, function(self, owner)
 	Widget._ctor(self, "uiachievement")
 	self.owner = owner
@@ -297,7 +300,7 @@ local uiachievement = Class(Widget, function(self, owner)
 					announce = 4
 					if TheInventory:CheckOwnership("emoji_fire") then emoji_link = ":fire:" end
 				end
-				TheNet:Say(STRINGS.LMB .. string.format(STRINGS.ACHIEVEMENT_ANNOUNCE_POINT[announce], self.owner.currentcoinamount:value())..emoji_link, false)
+				TheNet:Say(STRINGS.LMB .. string.format(STRINGS.ACHIEVEMENT_ANNOUNCE_POINT[announce], self.owner.currentcoinamount:value())..emoji_link .. string.format(STRINGS.ACHIEVEMENT_KILL_AMOUNT, self.owner.currentkillamount:value()), false)
 				self.cooldown = false
 				self.owner:DoTaskInTime(3, function() self.cooldown = true end)
 			end
@@ -429,7 +432,7 @@ local uiachievement = Class(Widget, function(self, owner)
 	self.mainbutton.configsmaller:SetHoverText(STRINGS.ACHIEVEMENT_SHRINK)
 	self.mainbutton.configsmaller:SetOnClick(function()
 		if not self.mainui.bg.allachiv.shown and not self.mainui.bg.allcoin.shown then
-			self.mainui.bg.bg.allachiv:Show()
+			self.mainui.bg.allachiv:Show()
 			self.mainui.bg:Show()
 			self.mainui.infobutton:Show()
 		end
@@ -1057,6 +1060,10 @@ function uiachievement:build()
 
 					self.cooldown = false
 					self.owner:DoTaskInTime(3, function() self.cooldown = true end)
+				end
+			else
+				if killAmountFinishAchievement == true and achievement_config.idconfig[self.listitem[i].name] ~= nil and self.listitem[i].name ~= "all" and self.listitem[i].check ~= 1  then
+					SendModRPCToServer(MOD_RPC["DSTAchievement"]["finishachievement"],self.listitem[i].name)
 				end
 			end
 		end)

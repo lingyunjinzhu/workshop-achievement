@@ -1,8 +1,8 @@
 ChooseTranslationTable = ChooseTranslationTable or function() end
 name ="New Achivement"
-description = "Achievement and level(Reburn)"
+description = "Achievement (Reburn)"
 author = "ACLegend"
-version = "2.1.7"
+version = "2.2.0"
 
 forumthread = ""
 
@@ -79,6 +79,22 @@ local MODINFO_NAME = {
         "Max Crit up",
         ["zh"] = "提升暴击最大学习次数",
         ["en"] = "Max Crit up",
+    },
+    KILLAMOUNT_CAN_FINISH_ACHIEVEMENT = {
+        "kill amount can finish achievement",
+        ["zh"] = "消耗杀戮值可以完成成就",
+        ["en"] = "Max Crit up",
+    },
+    COST_KILL_AMOUNT = {
+        "kill amount can finish achievement",
+        ["zh"] = "完成一个成就消耗杀戮值数量",
+        ["en"] = "finsh achievement cost kill amount",
+    },
+    CAN_HIDE_HUD = 
+    {
+        "hide the main panel by pressing the button N",
+        ["zh"] = "是否可按N显隐主面板",
+        ["en"] = "press N to show and hide the main panel",
     },
 }
 configuration_options =
@@ -239,5 +255,42 @@ configuration_options =
                         {description = "20",hover = "20", data = 20},
                     },
         default = 20,
+    },
+    {
+        name = "killamount_can_finish_achievement",
+        label = ChooseTranslationTable(MODINFO_NAME.KILLAMOUNT_CAN_FINISH_ACHIEVEMENT),
+        hover = "killamount can finish achievement",
+        options =   {
+     
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+
+        },
+        default = true,
+    },
+    {
+        name = "cost_kill_amount",
+        label = ChooseTranslationTable(MODINFO_NAME.COST_KILL_AMOUNT),
+        hover = "finsh achievement cost",
+        options =   {
+            {description = "500",hover = "500", data = 500},
+            {description = "800",hover = "800", data = 800},
+            {description = "1000",hover = "1000", data = 1000},
+            {description = "1500",hover = "1500", data = 1500},
+            {description = "2000",hover = "2000", data = 2000},
+            {description = "2500",hover = "2500", data = 2500},
+            {description = "5000",hover = "5000", data = 5000},
+        },
+        default = 1000,
+    },
+    {
+        name = "can_hide_hud",
+        label = ChooseTranslationTable(MODINFO_NAME.CAN_HIDE_HUD),
+        hover = "Is it possible to hide the main panel by pressing the button N",
+        options =   {
+            {description = "YES", data = true},
+            {description = "NO", data = false},
+        },
+        default = true,
     },
 }

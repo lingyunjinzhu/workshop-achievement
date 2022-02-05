@@ -17,6 +17,7 @@ local achievement_config = require("Achievement.achievement_config")
 local achievement_ability_config = require("Achievement.achievement_ability_config")
 local ability_cost = achievement_ability_config.ability_cost
 local language  = GetModConfigData("language")
+local can_hide_hud = GetModConfigData("can_hide_hud")
 local language_package = "Achievement.strings_achievement_" .. language
 require(language_package)
 require "Achievement.allachivrpc"
@@ -654,7 +655,27 @@ local function Adduiachievement(self)
         end
     end
 end
+
 AddClassPostConstruct("widgets/controls", Adduiachievement)
+GLOBAL.TheInput:AddKeyDownHandler(
+    GLOBAL.KEY_N,
+    function()
+        if can_hide_hud then
+            if not GLOBAL.TheWorld.ismastersim then
+                if GLOBAL.ThePlayer.HUD.controls.uiachievement and GLOBAL.ThePlayer.HUD.controls.uiachievement:IsVisible() then
+                    GLOBAL.ThePlayer.HUD.controls.uiachievement:Hide()
+                else
+                    GLOBAL.ThePlayer.HUD.controls.uiachievement:Show()
+                    if GLOBAL.ThePlayer.HUD.controls.uiachievement.mainui.bg.allcoin.shown then
+                    else
+                        GLOBAL.ThePlayer.HUD.controls.uiachievement.mainui.bg.title_1.onclick()
+                    end
+                end
+            end
+        end
+    end,
+    false
+)
 
 --欧皇检测
 AddPrefabPostInit("krampus_sack", function(inst)

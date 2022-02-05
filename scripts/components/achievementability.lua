@@ -982,6 +982,7 @@ local max_speedup = GetModConfigData("max_speedup",modname)
 local max_damageup = GetModConfigData("max_damageup",modname)
 local max_absorbup = GetModConfigData("max_absorbup",modname)
 local max_crit = GetModConfigData("max_crit",modname)
+local cost_kill_amount = GetModConfigData("cost_kill_amount",modname)
 --提升速度获取
 function achievementability:speedupcoin(inst)
     if self.coinamount >= ability_cost["speedup"].cost and self.speedup < max_speedup then
@@ -1046,7 +1047,7 @@ function achievementability:critfn(inst)
             if target.SoundEmitter ~= nil then
                 target.SoundEmitter:PlaySound("dontstarve/common/whip_large")
             end
-            if target.components.lootdropper and target.components.health:IsDead() then
+            if target.components.lootdropper and  target.components.health and target.components.health:IsDead() then
                 if target.components.freezable or target:HasTag("monster") then
                     target.components.lootdropper:DropLoot()
                 end
@@ -1572,6 +1573,7 @@ local function OnSeasonChangeAdaption(inst)
         end
     end
 end
+
 
 function achievementability:icebodyfn(inst)
     if self.icebody == true then
@@ -2792,6 +2794,20 @@ function achievementability:timemanagerRemove()
             inst.components.inventory:DropItem(equip,true,true)
         end
         inst.components.combat.customdamagemultfn =  inst.components.combat.old_customdamagemultfn
+    end
+end
+
+function achievementability:costKillAmountFinishAchievement(inst,id)
+    local v = achievement_config.idconfig[id]
+    if v.point and inst.components.achievementmanager["check" .. v.id] ~= 1 and self.killamount >= cost_kill_amount then
+        inst.components.achievementmanager["check" .. v.id] = 1
+        if type(v.need_amount) == "table" then
+            inst.components.achievementmanager["current" .. v.id .. "amount"] = v.need_amount[1]
+        else
+            inst.components.achievementmanager["current" .. v.id .. "amount"] = v.need_amount
+        end
+        inst.components.achievementability.coinamount = inst.components.achievementability.coinamount + v.point
+        inst.components.achievementability:killDoDelta(-cost_kill_amount)
     end
 end
 
