@@ -1182,74 +1182,78 @@ function achievementability:doubledropcoin(inst)
     end
 end
 
+function achievementability:calc_killamount(inst,data)
+    --杀戮值测试
+    if data.victim and  data.victim.nokilltask == nil and data.victim:IsValid()   and data.victim.components.health ~= nil and data.victim.components.health.currenthealth == 0 
+        and not ( 
+        data.victim:HasTag("veggie") or
+        data.victim:HasTag("structure") or
+        data.victim:HasTag("wall") or
+        data.victim:HasTag("balloon") or
+        data.victim:HasTag("groundspike") or
+        data.victim:HasTag("smashable") )
+    then
+    --  1 2 3 5 8 13 21 34 55 89 144 233  377 610 987
+    --HP在250]及以下的     kill-- 1  概率获得1点 0.33
+        if  data.victim.components.health.maxhealth <=250 and math.random()  < 0.33 then
+            self:killDoDelta(1)
+        end
+
+        --HP在(250~800]之间的 kill-- 3
+        if  data.victim.components.health.maxhealth >250 and data.victim.components.health.maxhealth <= 800  then
+            self:killDoDelta(3)
+        end
+
+        --HP在(800~1250)之间的 kill-- 5
+        if  data.victim.components.health.maxhealth >800 and data.victim.components.health.maxhealth <= 1250  then
+            self:killDoDelta(5)
+        end
+
+        --HP在[1250,2500]的    kill-- 8
+        if  data.victim.components.health.maxhealth >1250 and data.victim.components.health.maxhealth <= 2500  then
+            self:killDoDelta(8)
+        end
+
+        --HP在(2500,3500]      kill-- 21
+        if  data.victim.components.health.maxhealth >2500 and data.victim.components.health.maxhealth <= 3500  then
+            self:killDoDelta(21)
+        end
+
+        --HP在(3500,5000]      kill-- 34
+        if  data.victim.components.health.maxhealth >3500 and data.victim.components.health.maxhealth <= 50800  then
+            self:killDoDelta(34)
+        end
+
+        --HP在(5000,8000]      kill-- 55
+        if  data.victim.components.health.maxhealth >5000 and data.victim.components.health.maxhealth <= 8000  then
+            self:killDoDelta(55)
+        end
+
+        --HP在(8000,18000]      kill-- 89
+        if  data.victim.components.health.maxhealth >8000 and data.victim.components.health.maxhealth < 18000  then
+            self:killDoDelta(89)
+        end
+
+        --HP在(18000,30000]     kill-- 144
+        if  data.victim.components.health.maxhealth >18000 and data.victim.components.health.maxhealth <= 30000  then
+            self:killDoDelta(144)
+        end
+
+        --HP在(30000,55000]     kill-- 233
+        if  data.victim.components.health.maxhealth >30000 and data.victim.components.health.maxhealth <= 55000  then
+            self:killDoDelta(233)
+        end
+
+        --HP在(55000,+)      kill-- 377
+        if  data.victim.components.health.maxhealth >55000   then
+            self:killDoDelta(377)
+        end
+    end
+end
+
 function achievementability:_calc_kill_value(inst)
     inst:ListenForEvent("killed", function(inst, data)
-        --杀戮值测试
-        if data.victim and  data.victim.nokilltask == nil and data.victim:IsValid()   and data.victim.components.health ~= nil and data.victim.components.health.currenthealth == 0 
-            and not ( 
-            data.victim:HasTag("veggie") or
-            data.victim:HasTag("structure") or
-            data.victim:HasTag("wall") or
-            data.victim:HasTag("balloon") or
-            data.victim:HasTag("groundspike") or
-            data.victim:HasTag("smashable") )
-        then
-        --  1 2 3 5 8 13 21 34 55 89 144 233  377 610 987
-        --HP在250]及以下的     kill-- 1  概率获得1点 0.33
-            if  data.victim.components.health.maxhealth <=250 and math.random()  < 0.33 then
-                self:killDoDelta(1)
-            end
-
-            --HP在(250~800]之间的 kill-- 3
-            if  data.victim.components.health.maxhealth >250 and data.victim.components.health.maxhealth <= 800  then
-                self:killDoDelta(3)
-            end
-
-            --HP在(800~1250)之间的 kill-- 5
-            if  data.victim.components.health.maxhealth >800 and data.victim.components.health.maxhealth <= 1250  then
-                self:killDoDelta(5)
-            end
-
-            --HP在[1250,2500]的    kill-- 8
-            if  data.victim.components.health.maxhealth >1250 and data.victim.components.health.maxhealth <= 2500  then
-                self:killDoDelta(8)
-            end
-
-            --HP在(2500,3500]      kill-- 21
-            if  data.victim.components.health.maxhealth >2500 and data.victim.components.health.maxhealth <= 3500  then
-                self:killDoDelta(21)
-            end
-
-            --HP在(3500,5000]      kill-- 34
-            if  data.victim.components.health.maxhealth >3500 and data.victim.components.health.maxhealth <= 50800  then
-                self:killDoDelta(34)
-            end
-
-            --HP在(5000,8000]      kill-- 55
-            if  data.victim.components.health.maxhealth >5000 and data.victim.components.health.maxhealth <= 8000  then
-                self:killDoDelta(55)
-            end
-
-            --HP在(8000,18000]      kill-- 89
-            if  data.victim.components.health.maxhealth >8000 and data.victim.components.health.maxhealth < 18000  then
-                self:killDoDelta(89)
-            end
-
-            --HP在(18000,30000]     kill-- 144
-            if  data.victim.components.health.maxhealth >18000 and data.victim.components.health.maxhealth <= 30000  then
-                self:killDoDelta(144)
-            end
-
-            --HP在(30000,55000]     kill-- 233
-            if  data.victim.components.health.maxhealth >30000 and data.victim.components.health.maxhealth <= 55000  then
-                self:killDoDelta(233)
-            end
-
-            --HP在(55000,+)      kill-- 377
-            if  data.victim.components.health.maxhealth >55000   then
-                self:killDoDelta(377)
-            end
-        end
+        self:calc_killamount(inst,data)
     end)
 end
 

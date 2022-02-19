@@ -1433,8 +1433,8 @@ function achievementmanager:allget(inst)
             end
             self:allgettwo(inst)
             self:intogamefn(inst)
-            for i=1, 25 do
-                inst:DoTaskInTime(i/25*3, function()
+            for i=1, 1000, 10 do
+                inst:DoTaskInTime(i/100*3, function()
                     local pos = Vector3(inst.Transform:GetWorldPosition())
                     SpawnPrefab("explode_firecrackers").Transform:SetPosition(pos.x+math.random(-3,3), pos.y, pos.z+math.random(-3,3))
                     local x, y, z = inst.Transform:GetWorldPosition()
@@ -1444,11 +1444,6 @@ function achievementmanager:allget(inst)
                     local firecrackers_item4 = SpawnPrefab("firecrackers")
 
                     if firecrackers_item1 ~= nil and firecrackers_item1.components.stackable and firecrackers_item1.components.burnable then
-                        firecrackers_item1.components.stackable:SetStackSize(10)
-                        firecrackers_item2.components.stackable:SetStackSize(10)
-                        firecrackers_item3.components.stackable:SetStackSize(10)
-                        firecrackers_item4.components.stackable:SetStackSize(10)
-                        
                         firecrackers_item1.components.burnable:Ignite() 
                         firecrackers_item2.components.burnable:Ignite()
                         firecrackers_item3.components.burnable:Ignite()

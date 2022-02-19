@@ -704,7 +704,7 @@ AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.HARVEST, funct
             end
         end))
 
---阿比盖尔杀死怪物   leader也增加exp
+--阿比盖尔杀死怪物   leader也增加exp和killamount
 AddPrefabPostInit("abigail", function(inst)
     inst:ListenForEvent("killed", function(inst, data)
         local leader = nil
@@ -717,6 +717,7 @@ AddPrefabPostInit("abigail", function(inst)
                 -- local victim_check = data.victim
                 -- victim_check.abigailkill_ai = victim_check:DoTaskInTime(1.3, function(victim_check)  victim_check.abigailkill_ai = nil end)
                 -- leader.achivhaskill = leader:DoTaskInTime(1.2, function(leader) leader.achivhaskill = nil end)
+                leader.components.achievementability:calc_killamount(leader,data)
                 leader.components.achievementmanager:check_kill_exp(leader,data.victim)
             end 
         end
