@@ -388,6 +388,97 @@ function achievementability:jumpfn(inst)
     end)
 end
 
+
+local function GetStackSize(item)
+    return item.components.stackable ~= nil and item.components.stackable:StackSize() or 1
+end
+
+
+local function IsSoul(item)
+    return item.prefab == "wortox_soul"
+end
+
+local function GetSouls(inst)
+    local souls = inst.components.inventory:FindItems(IsSoul)
+    local count = 0
+    for i, v in ipairs(souls) do
+        count = count + GetStackSize(v)
+    end
+    return souls, count
+end
+
+local function PutSoulOnCooldown(item)
+    if not IsSoul(item) then
+        return
+    end
+
+    if item.components.rechargeable ~= nil then
+        item.components.rechargeable:Discharge(TUNING.WORTOX_FREEHOP_TIMELIMIT)
+    end
+end
+
+local function RemoveSoulCooldown(item)
+    if not IsSoul(item) then
+        return
+    end
+
+    if item.components.rechargeable ~= nil then
+        item.components.rechargeable:SetPercent(1)
+    end
+end
+
+local function SetNetvar(inst)
+    if inst.player_classified ~= nil then
+        assert(inst._freesoulhop_counter >= 0 and inst._freesoulhop_counter <= 7, "Player _freesoulhop_counter out of range: "..tostring(inst._freesoulhop_counter))
+        inst.player_classified.freesoulhops:set(inst._freesoulhop_counter)
+    end
+end
+
+
+local function ClearSoulhopCounter(inst)
+    inst._freesoulhop_counter = 0
+    inst._soulhop_cost = 0
+    SetNetvar(inst)
+end
+
+local function FinishPortalHop(inst)
+    if inst._freesoulhop_counter > 0 then
+        if inst.components.inventory ~= nil then
+            inst.components.inventory:ConsumeByName("wortox_soul", math.max(math.ceil(inst._soulhop_cost), 1))
+        end
+        ClearSoulhopCounter(inst)
+    end
+end
+
+local function TryToPortalHop(inst, souls, consumeall)
+    local invcmp = inst.components.inventory
+    if invcmp == nil then
+        return false
+    end
+
+    souls = souls or 1
+    local _, soulscount = GetSouls(inst)
+    if soulscount < souls then
+        return false
+    end
+    if inst._freesoulhop_counter == nil then inst._freesoulhop_counter = 0 end
+    if inst._soulhop_cost == nil then inst._soulhop_cost = 0 end
+    inst._freesoulhop_counter = inst._freesoulhop_counter + souls
+    inst._soulhop_cost = inst._soulhop_cost + souls
+
+    if not consumeall and inst._freesoulhop_counter < TUNING.WORTOX_FREEHOP_HOPSPERSOUL then
+        inst._soulhop_cost = inst._soulhop_cost - souls -- Make it free.
+        invcmp:ForEachItem(PutSoulOnCooldown)
+    else
+        invcmp:ForEachItem(RemoveSoulCooldown)
+        inst:FinishPortalHop()
+    end
+    SetNetvar(inst)
+
+    return true
+end
+
+
 --灵魂跳跃  
 function achievementability:soulhopcopycoin(inst)
     if self.soulhopcopy ~= true and self.coinamount >= ability_cost["soulhopcopy"].cost and inst.prefab ~= "wortox" then
@@ -396,6 +487,7 @@ function achievementability:soulhopcopycoin(inst)
         local itemsoul = SpawnPrefab("wortox_soul")
         itemsoul.components.stackable:SetStackSize(8)
         inst.components.inventory:GiveItem(itemsoul, nil, inst:GetPosition())
+        self:soulhopcopyfn(inst)
         self:ongetcoin(inst)
     end
 end
@@ -403,6 +495,18 @@ end
 --灵魂跳跃效果拥有
 function achievementability:soulhopcopyfn(inst)
     if self.soulhopcopy == true then
+        if inst._freesoulhop_counter == nil then
+            inst._freesoulhop_counter = 0
+        end
+        if  inst._soulhop_cost == nil then
+            inst._soulhop_cost = 0
+        end
+        if inst.TryToPortalHop == nil then
+            inst.TryToPortalHop = TryToPortalHop
+        end
+        if inst.FinishPortalHop == nil then
+            inst.FinishPortalHop = FinishPortalHop
+        end
         inst:DoPeriodicTask(0.1, function()
             if inst.components.playeractionpicker ~= nil and self.soulhopcopy then
                 inst.components.playeractionpicker.pointspecialactionsfn = GetPointSpecialActions
@@ -570,7 +674,7 @@ end
 
 --装备铥甲+100HP
 function achievementability:firmarmorfn(inst)
-    if self.firmarmor == 1  and inst.components.inventory and self.healthmax ~= inst.components.health.maxhealth  then  
+    if self.firmarmor == 1  and inst.components.inventory then  
             local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
             if item ~= nil and item.prefab == "armorruins" then
                 local health_percent = inst.components.health:GetPercent()
@@ -2646,6 +2750,19 @@ local function warlter_common_postinit(inst)
     inst:ListenForEvent("onremove", OnWalterRemoveEntity)
 end
 
+-- local function Wolfgang_OnHitOther(inst, data)
+-- 	local target = data.target
+-- 	if target ~= nil and data.weapon == nil or (data.weapon.components.inventoryitem and data.weapon.components.inventoryitem:IsHeldBy(inst)) then
+-- 		local delta = target:HasTag("epic") and TUNING.WOLFGANG_MIGHTINESS_ATTACK_GAIN_GIANT
+-- 					or target:HasTag("smallcreature") and TUNING.WOLFGANG_MIGHTINESS_ATTACK_GAIN_SMALLCREATURE
+-- 					or TUNING.WOLFGANG_MIGHTINESS_ATTACK_GAIN_DEFAULT
+
+-- 		inst.components.mightiness:DoDelta(delta)	
+
+-- 		--print("OnHitOther", data.target, data.weapon, delta, data.weapon == nil or data.weapon.components.inventoryitem:IsHeldBy(inst))
+-- 	end
+-- end
+
 -- walter ability
 function achievementability:fearlesscoin(inst)
     if self.fearless ~= true and self.coinamount >= ability_cost["fearless"].cost and inst.prefab ~= "walter"  then
@@ -2665,6 +2782,9 @@ end
 function achievementability:fearlessfn(inst)
     if self.fearless then
         warlter_common_postinit(inst)
+        -- if inst.prefab == "wolfgang" then
+        --     inst:ListenForEvent("onhitother", Wolfgang_OnHitOther)
+        -- end
     else
         if inst.prefab ~= "walter" then
             inst:RemoveTag("pebblemaker")
@@ -2859,6 +2979,7 @@ function achievementability:resetbuff(inst)
             inst.components.health:SetPercent(health_percent)
             self.healthmax = inst.components.health.maxhealth
         end
+        self.firmarmor = 0
     end
 
     inst.components.locomotor.externalspeedmultiplier = inst.components.locomotor.externalspeedmultiplier - ability_ratio["speedup"]*self.speedup

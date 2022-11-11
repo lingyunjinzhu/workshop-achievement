@@ -520,7 +520,7 @@ local function _give_action()
     GIVE.fn = function(act)
         local achievementmanager = act.doer.components.achievementmanager
         local result =  old_give_fn(act)
-        if result then
+        if result and achievementmanager then
             for _,v in pairs(achievement_config.category_config["give"]) do
                 if not achievementmanager[v.check] then
                     if act.target.prefab == v.target and (not v.item  or v.item == act.invobject.prefab) then
