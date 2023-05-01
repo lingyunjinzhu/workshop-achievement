@@ -2963,7 +2963,7 @@ function achievementability:removecoin(inst)
     end
     if inst.components.health.currenthealth > 0 and not inst.components.rider:IsRiding() then
         inst.components.locomotor:Stop()
-        inst.sg:GoToState("changeoutsidewardrobe")
+        --inst.sg:GoToState("changeoutsidewardrobe")
     end
     SpawnPrefab("shadow_despawn").Transform:SetPosition(inst.Transform:GetWorldPosition())
     SpawnPrefab("statue_transition_2").Transform:SetPosition(inst.Transform:GetWorldPosition())

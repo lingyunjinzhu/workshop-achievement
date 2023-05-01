@@ -2,7 +2,7 @@ ChooseTranslationTable = ChooseTranslationTable or function() end
 name ="New Achivement"
 description = "Achievement (Reburn)"
 author = "ACLegend"
-version = "2.2.4"
+version = "2.2.5"
 
 forumthread = ""
 

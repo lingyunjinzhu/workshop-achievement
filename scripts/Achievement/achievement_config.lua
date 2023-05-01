@@ -218,7 +218,7 @@ local config =
     {id = "moon_16",finish_type = "periodic_task", sub_finish_type = "equip",equip = "flowerhat",need_amount = 960,catagory = 7,point = 1,},
     {id = "moon_17",finish_type = "cook",product = "wetgoop",need_amount = 10,catagory = 8,point = 1,},
     {id = "moon_18",finish_type = "kill",victim = {"spiderden","spiderden_2","spiderden_3"},special_condition = function(victim) return victim.components.upgradeable and not victim.components.upgradeable:CanUpgrade() end,need_amount = 6,catagory = 9,point = 1,},
-    {id = "moon_19",finish_type = "picksomething", pickitem = "cave_banana_tree",need_amount = 40,catagory = 6,point = 1,},
+    {id = "moon_19",finish_type = "picksomething", pickitem = {"cave_banana_tree","bananabush"},need_amount = 40,catagory = 6,point = 1,},
     {id = "moon_20",finish_type = "picksomething", pickitem = "wormlight_plant",need_amount = 40,catagory = 6,point = 1,},
     {id = "moon_21",finish_type = "finishedwork",prefab = {"ruins_statue_head","ruins_statue_head_nogem","ruins_statue_mage","ruins_statue_mage_nogem"},need_amount = 30,catagory = 8,point = 1,},
     {id = "moon_22",finish_type = "kill",victim = "tentacle_pillar",need_amount = 9,catagory = 2,point = 1,},
@@ -368,7 +368,11 @@ local specific_ignore =
     ["pigsy"] =
     {
         "checka_a52",
-    }
+    },
+    ["wanda"] = 
+    {
+        "checktooyoung","checknoob","checka_a24","checkmoon_28","checkseas_05","checkstarvedeath","checkblack","checkkillbyrose",
+    },
 }
 
 local specific_achievement = 

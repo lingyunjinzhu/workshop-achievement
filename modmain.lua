@@ -1,3 +1,5 @@
+-- GLOBAL.CHEATS_ENABLED = true
+-- GLOBAL.require( 'debugkeys' )
 local _G = GLOBAL
 local require = GLOBAL.require
 local ipairs =GLOBAL.ipairs
@@ -460,6 +462,35 @@ end
 --     return old_CanEntitySeeInStorm(inst) or inst.components.achievementability.ignorestorm
 -- end
 
+local function SavePlayerOldData(inst)
+    if inst.components.achievementability and inst.components.achievementmanager then
+        inst.components.achievementability:OnSave()
+        inst.components.achievementmanager:OnSave()
+        -- local achievementabilityPersist = inst.components.achievementability:OnSave()
+        -- local achievementmanagerPersist = inst.components.achievementmanager:OnSave()
+        -- GLOBAL.TheWorld.achievementPersist = {}
+        -- GLOBAL.TheWorld.achievementPersist[inst.userid] =
+        -- {
+        --     ["SaveForReroll"] = inst.SaveForReroll ~= nil and inst:SaveForReroll() or nil,
+        --     ["achievementabilityPersist"] = achievementabilityPersist,
+        --     ["achievementmanagerPersist"] = achievementmanagerPersist,
+        -- }
+
+        if inst.prefab ~= "walter" then
+            if inst.woby ~= nil then
+                inst.woby:OnPlayerLinkDespawn()
+            end
+        end
+        
+        if inst.prefab ~= "wendy" then
+            local abigail = inst.components.ghostlybond and inst.components.ghostlybond.ghost
+            if abigail then
+                abigail:RemoveFromScene()
+            end
+        end
+    end
+end
+
 --预运行
 AddPlayerPostInit(function(inst)
     _init_ability_net_var(inst)
@@ -597,6 +628,25 @@ AddPlayerPostInit(function(inst)
         end
         inst:DoTaskInTime(1, OnPlayerNewSpawn)
     end
+
+    local OldChangeToMonkey = inst.ChangeToMonkey
+    local NewChangeToMonkey = function(inst)
+        SavePlayerOldData(inst)
+        if OldChangeToMonkey then
+            return OldChangeToMonkey(inst)
+        end
+    end
+    local OldChangeFromMonkey = inst.ChangeFromMonkey
+    local NewChangeFromMonkey = function(inst)
+        SavePlayerOldData(inst)
+        if OldChangeFromMonkey then
+            return OldChangeFromMonkey(inst)
+        end
+    end
+
+    inst.ChangeToMonkey = NewChangeToMonkey
+    inst.ChangeFromMonkey = NewChangeFromMonkey
+
     if SHOW_TITLE then
         local function updateTitle(inst)
             local level,cur_exp,next_exp = 0,0,0
@@ -617,7 +667,7 @@ AddPlayerPostInit(function(inst)
             else
                 title =  STRINGS.TITLE[phase]
             end
-            local titleinfo = string.format(STRINGS.TITLE_INFO,title,level,cur_exp,next_exp,inst:GetDisplayName())
+            local titleinfo = string.format(STRINGS.TITLE_INFO,title,level,cur_exp,next_exp,inst:GetDisplayName() or "")
             inst.title:SetText(titleinfo,level) 
             --inst.title:SetTexture(level)
         end
