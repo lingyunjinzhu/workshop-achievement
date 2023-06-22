@@ -1875,6 +1875,11 @@ STRINGS.ACHIEVEMENT_LIST =
     name =  "累计击杀",
     desc =  "击杀",
   },
+  ["boss_28"] = 
+  { 
+    name =  "累计击杀",
+    desc =  "击杀",
+  },
   ["killbyrose"] = 
   { 
     name =  "玫瑰花下死",

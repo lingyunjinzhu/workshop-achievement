@@ -743,6 +743,23 @@ local function DealAction()
         end
         return  result
     end
+
+    local BLINK_MAP = ACTIONS.BLINK_MAP
+    local old_blink_map_fn = BLINK_MAP.fn
+    BLINK_MAP.fn = function(act, ...)
+        local result = old_blink_map_fn(act)
+        if result and act.doer.prefab and act.doer.prefab ~= "wortox" then
+            act.doer._soulhop_cost = act.distancecount
+            if act.doer._soulhop_cost_task == nil then
+                act.doer._soulhop_cost_task = act.doer:DoTaskInTime(0.75, function()  act.doer._soulhop_cost_task = nil  act.doer._soulhop_cost = 0 end)
+                act.doer:FinishPortalHop()
+                act.doer._soulhop_cost = 0
+            end
+        end
+        
+        return result
+    end
+
 end
 
 function achievementmanager:OnEatAchievementCheck(inst)

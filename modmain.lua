@@ -438,14 +438,31 @@ nil, -- numtogive
 "images/inventoryimages/moonbase.xml", -- atlas
 "moonbase.tex") -- image
 
-local function GetPointSpecialActions(inst, pos, useitem, right)
-    if right and useitem == nil and inst.replica.inventory and inst.replica.inventory:Has("wortox_soul", 1) then
+local function CanSoulhop(inst, souls)
+    if inst.replica.inventory:Has("wortox_soul", souls or 1) then
         local rider = inst.replica.rider
-        if rider == nil or not rider:IsRiding() then  --BLINK
-            return { GLOBAL.ACTIONS.BLINK }  --伍迪的冲刺 TACKLE
+        if rider == nil or not rider:IsRiding() then
+            return true
         end
     end
-    return {}
+    return false
+end
+
+local function GetPointSpecialActions(inst, pos, useitem, right)
+     if inst.prefab == "wilson" and right and useitem == nil then
+        local inventory = inst.replica.inventory
+        local toss_item = nil
+        if inventory ~= nil then
+            toss_item = inventory:GetEquippedItem(GLOBAL.EQUIPSLOTS.HANDS)
+        end
+        if toss_item ~= nil and toss_item:HasTag("special_action_toss") and inst.components.skilltreeupdater:IsActivated("wilson_torch_7") then
+          return { ACTIONS.TOSS }
+        end
+      end
+      if right and useitem == nil and inst.CanSoulhop and inst:CanSoulhop() then
+          return {ACTIONS.BLINK}
+      end
+      return {}
 end
 
 local function _init_ability_net_var(inst)
@@ -497,7 +514,7 @@ AddPlayerPostInit(function(inst)
     inst.currentcoinamount = GLOBAL.net_shortint(inst.GUID,"currentcoinamount")
     inst.currentkillamount = GLOBAL.net_uint(inst.GUID,"currentkillamount")--杀戮值
     for _,v in pairs(achievement_config.idconfig) do
-        if v.id == "a4" or v.id == "angry" then
+        if v.id == "a_4" or v.id == "angry" then
             inst[v.check] = GLOBAL.net_shortint(inst.GUID,v.check)
             inst[v.current] = GLOBAL.net_uint(inst.GUID,v.current)
         else
@@ -606,8 +623,10 @@ AddPlayerPostInit(function(inst)
     	inst:DoPeriodicTask(0.1, function()
         	if inst.replica.inventory and inst.replica.inventory:Has("wortox_soul", 1) then
             	inst:AddTag("soulstealer")
+                inst.CanSoulhop = CanSoulhop
         	else
             	inst:RemoveTag("soulstealer")
+                inst.CanSoulhop = nil
         	end    
         	if inst.components.playeractionpicker ~= nil  then
             	inst.components.playeractionpicker.pointspecialactionsfn = GetPointSpecialActions

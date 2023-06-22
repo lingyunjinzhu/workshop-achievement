@@ -1652,6 +1652,16 @@ function achievementability:refreshfn(inst)
                         end
                     end
                 end
+
+
+                local beard_sack = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BEARD)
+                if beard_sack ~= nil then
+                    for k,v in pairs(beard_sack.components.container.slots) do
+                        if v and v.components.perishable then
+                            v.components.perishable:ReducePercent(-.005)
+                        end
+                    end
+                end
             end
         end)
     end
@@ -2952,10 +2962,6 @@ function achievementability:removecoin(inst)
         end
         self[v.ability] = v.default_value
     end
-    self.absorbup = 0
-    self.damageup = 0
-    self.speedup = 0
-    self.crit = 0
     self.coinamount = self.coinamount + math.ceil(returncoin * TUNING.RETRUN_POINT)
     self:flashyfn(inst)
     if inst.components.playeractionpicker ~= nil then
@@ -2979,7 +2985,6 @@ function achievementability:resetbuff(inst)
             inst.components.health:SetPercent(health_percent)
             self.healthmax = inst.components.health.maxhealth
         end
-        self.firmarmor = 0
     end
 
     inst.components.locomotor.externalspeedmultiplier = inst.components.locomotor.externalspeedmultiplier - ability_ratio["speedup"]*self.speedup

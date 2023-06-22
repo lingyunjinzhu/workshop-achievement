@@ -1778,6 +1778,46 @@ STRINGS.ACHIEVEMENT_LIST =
     name = "Cumulative Kills",
     desc = "Kill",
   },
+  ["boss_21"] =
+  {
+    name = "Cumulative Kills",
+    desc = "Kill",
+  },
+  ["boss_22"] =
+  {
+    name = "Cumulative Kills",
+    desc = "Kill",
+  },
+  ["boss_23"] =
+  {
+    name = "Cumulative Kills",
+    desc = "Kill",
+  },
+  ["boss_24"] =
+  {
+    name = "Cumulative Kills",
+    desc = "Kill",
+  },
+  ["boss_25"] =
+  {
+    name = "Cumulative Kills",
+    desc = "Kill",
+  },
+  ["boss_26"] =
+  {
+    name = "Cumulative Kills",
+    desc = "Kill",
+  },
+  ["boss_27"] =
+  {
+    name = "Cumulative Kills",
+    desc = "Kill",
+  },
+  ["boss_28"] =
+  {
+    name = "Cumulative Kills",
+    desc = "Kill",
+  },
   ["killbyrose"] =
   {
     name = "The rose is dead",

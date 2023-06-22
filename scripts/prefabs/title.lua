@@ -8,10 +8,10 @@ local ColorTitle = {
 	RGB( 0,  129, 255),
 	RGB( 198,  0, 255),
 	RGB( 255,  128, 0),
-	RGB( 229,  204, 128),
+	RGB( 229,  20, 128),
 	RGB( 229,  204, 128),
 	RGB(96,0,96),
-	RGB(96,0,96),
+	RGB(196,0,96),
 	RGB(255,215,0),
 	RGB(191,0,0),
 }
@@ -71,8 +71,8 @@ local function fn()
 	inst._showTitle = nil
 	inst._showImgTitle = nil
 	inst.level = 0
-	inst.textColor = net_smallbyte(inst.GUID, "textColor", "textColor")
-	inst.imgTitleInfo = net_smallbyte(inst.GUID, "imgtitle","imagetitle")
+	inst.textColor = net_shortint(inst.GUID, "textColor", "textColor")
+	inst.imgTitleInfo = net_shortint(inst.GUID, "imgtitle","imagetitle")
 	inst:ListenForEvent("imagetitle", OnSetTexture)	
 	inst:AddTag("NOCLICK")
 	inst.titleInfo = net_string(inst.GUID, "texttitle", "title")
