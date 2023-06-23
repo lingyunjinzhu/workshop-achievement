@@ -787,6 +787,7 @@ AddPrefabPostInit("abigail", function(inst)
                 -- victim_check.abigailkill_ai = victim_check:DoTaskInTime(1.3, function(victim_check)  victim_check.abigailkill_ai = nil end)
                 -- leader.achivhaskill = leader:DoTaskInTime(1.2, function(leader) leader.achivhaskill = nil end)
                 leader.components.achievementability:calc_killamount(leader,data)
+                leader.components.achievementmanager:checkkill(leader,data.victim)
                 leader.components.achievementmanager:check_kill_exp(leader,data.victim)
             end 
         end
