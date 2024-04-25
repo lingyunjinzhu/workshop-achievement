@@ -730,7 +730,7 @@ GLOBAL.TheInput:AddKeyDownHandler(
     GLOBAL.KEY_N,
     function()
         if can_hide_hud then
-            if not GLOBAL.TheWorld.ismastersim then
+            if not GLOBAL.TheWorld.ismastersim and not GLOBAL.ThePlayer.HUD:HasInputFocus() then
                 if GLOBAL.ThePlayer.HUD.controls.uiachievement and GLOBAL.ThePlayer.HUD.controls.uiachievement:IsVisible() then
                     GLOBAL.ThePlayer.HUD.controls.uiachievement:Hide()
                 else
@@ -757,7 +757,7 @@ end)
 AddStategraphActionHandler("wilson", ActionHandler(ACTIONS.HARVEST, function(inst,action)
             if inst:HasTag("quagmire_fasthands") then
                 return  "domediumaction" 
-            elseif   action.target --[[and not action.target.components.stewer]] and inst:HasTag("fastharvester") then
+            elseif   action.target --[[and not action.target.components.stewer]] and inst:HasTag("fastpicker") then
                 return  "doshortaction" 
             else
                 return "dolongaction"
@@ -766,7 +766,7 @@ AddStategraphActionHandler("wilson", ActionHandler(ACTIONS.HARVEST, function(ins
 AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.HARVEST, function(inst,action)
             if inst:HasTag("quagmire_fasthands") then
                 return  "domediumaction" 
-            elseif  action.target --[[and not action.target.components.stewer]]  and inst:HasTag("fastharvester")  then
+            elseif  action.target --[[and not action.target.components.stewer]]  and inst:HasTag("fastpicker")  then
                 return  "doshortaction" 
             else
                 return "dolongaction"
@@ -781,12 +781,9 @@ AddPrefabPostInit("abigail", function(inst)
             leader = inst.components.follower.leader
         end
         if leader and  leader.components.achievementability.level == true  and leader:HasTag("player") then
-            if data.victim and data.victim.components.combat and data.achivhaskill == nil then 
-                -- data.victim.components.combat:GetAttacked(leader, 1) 
-                -- local victim_check = data.victim
-                -- victim_check.abigailkill_ai = victim_check:DoTaskInTime(1.3, function(victim_check)  victim_check.abigailkill_ai = nil end)
-                -- leader.achivhaskill = leader:DoTaskInTime(1.2, function(leader) leader.achivhaskill = nil end)
+            if data.victim and data.victim.components.combat and leader.achivhaskill == nil then 
                 leader.components.achievementability:calc_killamount(leader,data)
+                leader.components.achievementmanager:checkGetSoul(leader, data)
                 leader.components.achievementmanager:checkkill(leader,data.victim)
                 leader.components.achievementmanager:check_kill_exp(leader,data.victim)
             end 

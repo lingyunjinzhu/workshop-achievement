@@ -425,7 +425,7 @@ local no_drop_souls_tag =
 
 
 
-function achievementmanager:CheckGetSoul(inst,data)
+function achievementmanager:checkGetSoul(inst,data)
     if inst.components.achievementability.soulhopcopy == true then
       local victim = data.victim
       local hassoul = true
@@ -1049,13 +1049,13 @@ function achievementmanager:_recentattack(inst,victim)
                 local  has_userid = nil
                 if victim and victim.attacker_userid  and #victim.attacker_userid > 0 then
                     for i=1, #victim.attacker_userid do 
-                        if  victim.attacker_userid[i] == v.userid then
+                        if victim.attacker_userid[i] == v.userid then
                             has_userid = v.userid
                             break
                         end
                     end
                 end
-                --if has_userid and victim and victim.components.combat then victim.components.combat:GetAttacked(v, 1) end
+
                 if has_userid then
                     v.achivhaskill = v:DoTaskInTime(1.2, function(v) v.achivhaskill = nil end)
                     v.components.achievementmanager:checkkill(v,victim)
@@ -1112,7 +1112,7 @@ end
 function achievementmanager:OnKillAchievementCheck(inst)
     inst:ListenForEvent("killed", function(inst, data)
         local victim = data.victim
-        self:CheckGetSoul(inst,data)
+        self:checkGetSoul(inst,data)
         self:checkkill(inst,victim)
         self:_recentattack(inst,victim)
         self:check_kill_exp(inst,victim)

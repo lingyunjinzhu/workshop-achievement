@@ -138,6 +138,9 @@ function achievementability:onupdate()
             inst.components.moisture.maxMoistureRate = 0
         end
     end
+
+    self:electricfn(inst)
+
     if self.woodieability then
         for k,v in pairs(inst.components.inventory.itemslots) do
             if( v.prefab == "wereitem_goose" or v.prefab  == "wereitem_beaver" or v.prefab == "wereitem_moose" ) and not v:HasTag("preparedfood")  then
@@ -300,90 +303,43 @@ function achievementability:jumpfn(inst)
                 inst:DoTaskInTime(.1, function() self.attackcheck = false end)
             end
         end
-        ----攻击时记录5秒内的攻击者-----------------------------------------------------
-        if  target and   target.components and   target.components.freezable  ~= nil  and not target:HasTag("wall") and self.attackedcheck ~= true then
-            if target.attacker_userid and   #target.attacker_userid >0 then
-                local add_userid = true
 
-                for i=1, #target.attacker_userid do
-                    if  target.attacker_userid[i]  == inst.userid then
-                        add_userid = false
-                    end
-                end
-                if  add_userid then
-                    table.insert(target.attacker_userid,inst.userid)
-                end
-                --5秒后不攻击删除记录
-                if  inst.mod_add_userid == nil  then
-                    inst.mod_add_userid = inst:DoTaskInTime(8, function(inst,target)
-                        if target and target.attacker_userid and   #target.attacker_userid > 0 then
-                            local remove_userid = 0
-                            for i=1, #target.attacker_userid do
-                                if  target.attacker_userid[i]  == inst.userid then
-                                    remove_userid = i
-                                end
-                            end
-                            if remove_userid > 0 then
-                                table.remove(target.attacker_userid,remove_userid) 
-                            end
-                            inst.mod_add_userid = nil 
-                        end
-                    end)
-                elseif  inst.mod_add_userid ~= nil  then
-                    --5秒内连续攻击 刷新删除记录时间
-                    inst.mod_add_userid:Cancel()
-                    inst.mod_add_userid = inst:DoTaskInTime(8, function(inst,target)
-                        if target and target.attacker_userid and   #target.attacker_userid > 0 then
-                            local remove_userid = 0
-                            for i=1, #target.attacker_userid do
-                                if  target.attacker_userid[i]  == inst.userid then
-                                    remove_userid = i
-                                end
-                            end
-                            if remove_userid > 0 then
-                                table.remove(target.attacker_userid,remove_userid) 
-                            end
-                            inst.mod_add_userid = nil 
-                        end
-                    end)
-                end
-            else
+        if  target and target.components and target.components.freezable ~= nil  and not target:HasTag("wall") then
+            if target.attacker_userid == nil then 
                 target.attacker_userid = {}
-                table.insert(target.attacker_userid,inst.userid)
-                if  inst.mod_add_userid == nil  then
-                    inst.mod_add_userid = inst:DoTaskInTime(8, function(inst,target)
-                        if target and target.attacker_userid and   #target.attacker_userid > 0 then
-                            local remove_userid = 0
-                            for i=1, #target.attacker_userid do
-                                if  target.attacker_userid[i]  == inst.userid then
-                                    remove_userid = i
-                                end
-                            end
-                            if remove_userid > 0 then
-                                table.remove(target.attacker_userid,remove_userid) 
-                            end
-                            inst.mod_add_userid = nil 
-                        end
-                    end)
-                elseif  inst.mod_add_userid ~= nil  then
-                    inst.mod_add_userid:Cancel()
-                    inst.mod_add_userid = inst:DoTaskInTime(8, function(inst,target)
-                        if target and target.attacker_userid and   #target.attacker_userid > 0 then
-                            local remove_userid = 0
-                            for i=1, #target.attacker_userid do
-                                if  target.attacker_userid[i]  == inst.userid then
-                                    remove_userid = i
-                                end
-                            end
-                            if remove_userid > 0 then
-                                table.remove(target.attacker_userid,remove_userid) 
-                            end
-                            inst.mod_add_userid = nil 
-                        end
-                    end)
+            end
+
+            local find_userid = false
+            for i=1, #target.attacker_userid do
+                if  target.attacker_userid[i]  == inst.userid then
+                    find_userid = true
                 end
             end
-            inst:DoTaskInTime(.2, function(target) target.attackedcheck = false end)
+            if not find_userid then
+                table.insert(target.attacker_userid,inst.userid)
+            end
+
+            local removeTimeLimitUserTask = function(inst,target)
+                if target and target.attacker_userid and   #target.attacker_userid > 0 then
+                    local remove_userid = 0
+                    for i=1, #target.attacker_userid do
+                        if  target.attacker_userid[i]  == inst.userid then
+                            remove_userid = i
+                        end
+                    end
+                    if remove_userid > 0 then
+                        table.remove(target.attacker_userid,remove_userid) 
+                    end
+                    inst.mod_add_userid = nil 
+                end
+            end
+
+            if  inst.mod_add_userid == nil  then
+                inst.mod_add_userid = inst:DoTaskInTime(8, removeTimeLimitUserTask)
+            elseif  inst.mod_add_userid ~= nil  then
+                inst.mod_add_userid:Cancel()
+                inst.mod_add_userid = inst:DoTaskInTime(8, removeTimeLimitUserTask)
+            end
         end
     end)
 end
@@ -553,7 +509,6 @@ end
 --快速采集效果
 function achievementability:fastbuildfn(inst)
     if self.fastbuild then 
-        --inst:AddTag("fastharvester") --快速收获
         inst:AddTag("fastbuilder")
         inst:AddTag("achivehandyperson")
     end
@@ -600,7 +555,6 @@ function achievementability:electriccoin(inst)
                 inst._aifx2.Transform:SetPosition(0, 0.2, 0)
                 self.electricswitch = true
             end
-
         end
     end
     if self.electric < 1 and  self.coinamount >= ability_cost["electric"].cost then
@@ -608,11 +562,6 @@ function achievementability:electriccoin(inst)
         self:coinDoDelta(-ability_cost["electric"].cost)
         self:electricfn(inst)
         self:ongetcoin(inst)
-        -- if inst.components.debuffable ~= nil and inst.components.debuffable:IsEnabled() and
-        --     not (inst.components.health ~= nil and inst.components.health:IsDead()) and
-        --     not inst:HasTag("playerghost") then
-        --     inst.components.debuffable:AddDebuff("buff_electricattack", "buff_electricattack")
-        -- end
         self.electricswitch = true
     end
 end
@@ -625,43 +574,23 @@ function achievementability:electricfn(inst)
             inst.components.debuffable:AddDebuff("buff_electricattack", "buff_electricattack")
         end
     end
-    inst:DoPeriodicTask(2, function()
-        if  self.electric >= 1  then
-            if  inst.components.health and inst.components.health.currenthealth > 0 and not inst:HasTag("playerghost") and self.electricswitch then
-                if inst._aifx2 == nil then            
-                    inst._aifx2 = SpawnPrefab("electricfx") -- 
-                    inst._aifx2.entity:SetParent(inst.entity)
-                    inst._aifx2.Transform:SetPosition(0, 0.2, 0)
-                end
-                if  inst:HasTag("playerghost")  then
-                    if inst._aifx2 ~= nil then
-                        inst._aifx2:kill_fx()               
-                        inst._aifx2 = nil
-                    end
+    if  self.electric >= 1  then
+        if  inst.components.health and inst.components.health.currenthealth > 0 and not inst:HasTag("playerghost") and self.electricswitch then
+            if inst._aifx2 == nil then            
+                inst._aifx2 = SpawnPrefab("electricfx") -- 
+                inst._aifx2.entity:SetParent(inst.entity)
+                inst._aifx2.Transform:SetPosition(0, 0.2, 0)
+            end
+            if  inst:HasTag("playerghost")  then
+                if inst._aifx2 ~= nil then
+                    inst._aifx2:kill_fx()               
+                    inst._aifx2 = nil
                 end
             end
         end
-    end)
-    inst:DoPeriodicTask((TUNING.BUFF_ELECTRICATTACK_DURATION*0.9), function()
-        if  self.electric >= 1  then
-            if inst.components.debuffable ~= nil and inst.components.debuffable:IsEnabled() and
-                not (inst.components.health ~= nil and inst.components.health:IsDead()) and
-                not inst:HasTag("playerghost") then
-                inst.components.debuffable:AddDebuff("buff_electricattack", "buff_electricattack")
-            end
-        end
-    end)
-    inst:ListenForEvent("respawnfromghost", function(inst, data)
-        if  self.electric >= 1  then
-            if inst.components.debuffable ~= nil and inst.components.debuffable:IsEnabled() and
-                not (inst.components.health ~= nil and inst.components.health:IsDead()) and
-                not inst:HasTag("playerghost") then
-                inst.components.debuffable:AddDebuff("buff_electricattack", "buff_electricattack")
-            end  
-        end
-        
-    end)
+    end
 end
+
 
 function achievementability:firmarmorcoin(inst)
     if self.firmarmor < 1 and self.coinamount >= ability_cost["firmarmor"].cost then
@@ -689,12 +618,11 @@ function achievementability:firmarmorfn(inst)
             if data.item and data.item.prefab == "krampus_sack" and data.item.components and data.item.components.ksmark then --背过的背包
                 data.item.components.ksmark.mark = true
             end
-            if  self.firmarmor == 1  and data.item and data.item.prefab == "armorruins" then
-                    local health_percent = inst.components.health:GetPercent()
-                    inst.components.health:SetMaxHealth(inst.components.health.maxhealth + 100)
-                    inst.components.health:SetPercent(health_percent)
-                    self.healthmax = inst.components.health.maxhealth
-                --end
+            if self.firmarmor == 1  and data.item and data.item.prefab == "armorruins" then
+                local health_percent = inst.components.health:GetPercent()
+                inst.components.health:SetMaxHealth(inst.components.health.maxhealth + 100)
+                inst.components.health:SetPercent(health_percent)
+                self.healthmax = inst.components.health.maxhealth
             end
         end)
         inst:ListenForEvent("unequip", function(inst, data)
@@ -904,8 +832,6 @@ function achievementability:healthregencoin(inst)
         self:coinDoDelta(-ability_cost["healthregen"].cost)
         self:ongetcoin(inst)
         self:healthregenfn(inst)
-        inst:AddTag("valkyrie")
-        inst:AddTag("allachivpotion") --药水制作tag
         local item1 = SpawnPrefab("halloweenpotion_health_large")
         local item2 = SpawnPrefab("halloweenpotion_sanity_large")
         item1.components.stackable:SetStackSize(2)
@@ -2037,7 +1963,6 @@ end
 function achievementability:fastcollectionfn(inst)
     if self.fastcollection == true then
         inst:AddTag("fastpicker")
-        inst:AddTag("fastharvester") --快速收获
     end
 end
 
@@ -3004,7 +2929,6 @@ function achievementability:resetbuff(inst)
 
     inst:RemoveTag("achiveking")
     inst:RemoveTag("fastpicker")
-    inst:RemoveTag("fastharvester")--快速收获
     if inst.icebodytemperature ~= nil  then
         inst.icebodytemperature:Cancel()
         inst.icebodytemperature = nil
