@@ -200,6 +200,14 @@ STRINGS.ACHIEVEMENT_FIRE_FLY_LIGHT =
   [4] = "关照关闭+效果关闭",
 }
 
+STRINGS.ACHIEVEMENT_WORMWOOD_EFFECT = 
+{
+  [1] = "植物人特效1开启",
+  [2] = "植物人特效2开启",
+  [3] = "植物人特效3开启",
+  [4] = "植物人特效关闭",
+}
+
 STRINGS.LEVLE_INFO = "Lv.%d  %d/%d +%dEXP"
 STRINGS.ACHIEVEMENT_FINISH = "%s   %s 获得成就【%s】"
 STRINGS.ACHIEVEMENT_AWARD = "【%s】获得成就点%d"
@@ -925,6 +933,41 @@ STRINGS.ACHIEVEMENT_LIST =
     name =  "舌尖上的饥荒Ⅷ",
     desc = "吃掉%d个饺子",
   },
+  ["a_meatysalad"] = 
+  { 
+    name =  "均衡饮食",
+    desc = "吃掉%d个牛肉绿叶菜",
+  },
+  ["a_koalefig_trunk"] = 
+  { 
+    name =  "均衡饮食",
+    desc = "吃掉%d个无花果酿象鼻",
+  },
+
+  ["a_frozenbananadaiquiri"] = 
+  { 
+    name =  "均衡饮食",
+    desc = "吃掉%d个冰香蕉冻唇蜜",
+  },
+
+  ["a_shroomcake"] = 
+  { 
+    name =  "均衡饮食",
+    desc = "吃掉%d个蘑菇蛋糕",
+  },
+
+  ["a_sweettea"] = 
+  { 
+    name =  "舒缓一下",
+    desc = "吃掉%d个舒缓茶",
+  },
+
+  ["a_bunnystew"] = 
+  { 
+    name =  "均衡饮食",
+    desc = "吃掉%d个炖兔子",
+  },
+
   ["a_bisque"] = 
   { 
     name =  "舌尖上的饥荒Ⅸ",
@@ -1955,6 +1998,50 @@ STRINGS.ACHIEVEMENT_LIST =
     name =  "魔焰眼",
     desc =  "击杀双子魔眼-魔焰眼",
   },
+
+  ["killshadowthrall_hands"] = 
+  { 
+    name =  "墨荒-手",
+    desc =  "击杀墨荒-手",
+  },
+  ["killshadowthrall_wings"] = 
+  { 
+    name =  "墨荒-翅膀",
+    desc =  "击杀墨荒-翅膀",
+  },
+  ["killshadowthrall_horns"] = 
+  { 
+    name =  "墨荒-头",
+    desc =  "击杀墨荒-头",
+  },
+
+  ["killdaywalker"] = 
+  { 
+    name =  "梦魇疯猪",
+    desc =  "击杀梦魇疯猪",
+  },
+  ["killdaywalker2"] = 
+  { 
+    name =  "拾荒疯猪",
+    desc =  "击杀拾荒疯猪",
+  },
+  ["killsharkboi"] = 
+  { 
+    name =  "大霜鲨",
+    desc =  "击杀大霜鲨",
+  },
+  ["killarchive_centipede"] = 
+  { 
+    name =  "远古哨兵蜈蚣",
+    desc =  "击杀远古哨兵蜈蚣",
+  },
+
+  ["killlunarthrall_plant"] = 
+  { 
+    name =  "致命亮茄",
+    desc =  "让你寄生我的植物！",
+  },
+  
 }
 
 STRINGS.TITLE_INFO = "%s\nLv.%d EXP:%d/%d\n%s\n"

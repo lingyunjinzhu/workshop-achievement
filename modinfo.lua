@@ -1,8 +1,8 @@
 ChooseTranslationTable = ChooseTranslationTable or function() end
 name ="New Achivement"
-description = "Achievement (Reburn) 更新 2023.6.23"
+description = "Achievement (Reburn) 更新"
 author = "ACLegend"
-version = "2.2.11"
+version = "2.3.0"
 
 forumthread = ""
 
@@ -150,7 +150,7 @@ configuration_options =
                         {description = "60%", data = 0.60},
                         {description = "50%", data = 0.50},
                     },
-        default = 0.85,
+        default = 0.95,
     },
     {
         name = "showtitle",

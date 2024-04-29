@@ -1015,6 +1015,7 @@ function achievementmanager:checkkill(inst,victim)
                     killedfind = true
                 end
             else
+                print(v.victim, victim.prefab)
                 if v.victim == victim.prefab and (not v.special_condition or v.special_condition(victim,inst)) then
                     self[v.current] = self[v.current] + 1
                     killedfind = true
@@ -1022,6 +1023,7 @@ function achievementmanager:checkkill(inst,victim)
             end
             if killedfind then
                 if type(v.need_amount) ~= "table" then
+                    print(self[v.current],v.need_amount,not self[v.check],victim.prefab)
                     if self[v.current] >= v.need_amount and not self[v.check] then
                         self[v.check] = true
                         self:seffc(inst, v.id)
@@ -1109,8 +1111,16 @@ function achievementmanager:check_kill_exp(inst,victim)
     end
 end
 
+function achievementmanager:OnKilledCheck(inst, data)
+    local victim = data.victim
+    self:checkGetSoul(inst,data)
+    self:checkkill(inst,victim)
+    self:_recentattack(inst,victim)
+    self:check_kill_exp(inst,victim)
+end
+
 function achievementmanager:OnKillAchievementCheck(inst)
-    inst:ListenForEvent("killed", function(inst, data)
+    inst:ListenForEvent("killed", function (inst, data)
         local victim = data.victim
         self:checkGetSoul(inst,data)
         self:checkkill(inst,victim)

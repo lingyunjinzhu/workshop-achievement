@@ -2,7 +2,7 @@ local config =
 {
     {id = "intogame",need_amount = 1,catagory = 7,point = 1,},
     {id = "firsteat",need_amount = 1,catagory = 4,point = 1,},
-    {id = "supereat",finish_type = "eat",need_amount = 100,catagory = 4,point = 2,award = "giftwrap_blueprint",},
+    {id = "supereat",finish_type = "eat",need_amount = 200,catagory = 4,point = 2,award = "giftwrap_blueprint",},
     {id = "danding",finish_type = "eat", tag = "monsterlasagna_ai",need_amount = 10,catagory = 4,point = 2,},
     {id = "messiah",need_amount = 5,point = 3,},
     {id = "walkalot",finish_type = "periodic_task",special_condition = function(self,inst) return inst.components.locomotor.wantstomoveforward and not inst:HasTag("playerghost") end,need_amount = 18000,catagory = 7,point = 3,},
@@ -46,7 +46,7 @@ local config =
     {id = "a_spider_dropper",finish_type = "kill",victim = "spider_dropper",need_amount = 22,catagory = 2,point = 1,},
     {id = "a_spider_hider",finish_type = "kill",victim = "spider_hider",need_amount = 22,catagory = 2,point = 1,},
     {id = "a_spider_spitter",finish_type = "kill",victim = "spider_spitter",need_amount = 22,catagory = 2,point = 1,},
-    {id = "a_warg",finish_type = "kill",victim = "warg",need_amount = 2,catagory = 2,point = 2,},
+    {id = "a_warg",finish_type = "kill",victim = {"warg","mutatedwarg"},need_amount = 2,catagory = 2,point = 2,},
     {id = "a_hound",finish_type = "kill",victim = "hound",need_amount = 200,catagory = 2,point = 2,},
     {id = "a_firehound",finish_type = "kill",victim = "firehound",need_amount = 88,catagory = 2,point = 2,},
     {id = "a_icehound",finish_type = "kill",victim = "icehound",need_amount = 88,catagory = 2,point = 2,},
@@ -100,8 +100,18 @@ local config =
     {id = "a_fishsticks",finish_type = "eat", tag = "fishsticks_ai",need_amount = 40,catagory = 4,point = 1,},
     {id = "a_meatballs",finish_type = "eat", tag = "meatballs_ai",need_amount = 40,catagory = 4,point = 1,},
     {id = "a_perogies",finish_type = "eat", tag = "perogies_ai",need_amount = 120,catagory = 4,point = 1,},
-    {id = "a_bisque",finish_type = "eat", tag = "hotchili_ai",need_amount = 22,point = 1,},
-    {id = "a_surfnturf",finish_type = "eat", tag = "guacamole_ai",need_amount = 22,point = 1,},
+
+    {id = "a_meatysalad",finish_type = "eat", tag = "meatysalad_ai",need_amount = 10,catagory = 4,point = 1,},
+    {id = "a_koalefig_trunk",finish_type = "eat", tag = "koalefig_trunk_ai",need_amount = 10,catagory = 4,point = 1,},
+    {id = "a_frozenbananadaiquiri",finish_type = "eat", tag = "frozenbananadaiquiri_ai",catagory = 4,need_amount = 10,point = 1,},
+    {id = "a_shroomcake",finish_type = "eat", tag = "shroomcake_ai",need_amount = 10,catagory = 4,point = 1,},
+    {id = "a_sweettea",finish_type = "eat", tag = "sweettea_ai",need_amount = 10,catagory = 4,point = 1,},
+    {id = "a_bunnystew",finish_type = "eat", tag = "bunnystew_ai",need_amount = 10,catagory = 4,point = 1,},
+    
+    
+    {id = "a_bisque",finish_type = "eat", tag = "bisque_ai",need_amount = 22,point = 1,},
+    {id = "a_surfnturf",finish_type = "eat", tag = "surfnturf_ai",need_amount = 22,point = 1,},
+
     {id = "a_shark",finish_type = "kill",victim = "shark",catagory = 3,need_amount = 3,point = 2,},
     {id = "a_tigershark",finish_type = "kill",victim = "tigershark",need_amount = 1,point = 3,},
     {id = "a_twister",finish_type = "kill",victim = "twister",need_amount = 1,point = 3,},
@@ -117,7 +127,7 @@ local config =
     {id = "a_3",finish_type = "consumeingredients",need_amount = 3000,point = 4,},
     {id = "a_4",need_amount = 1000000,point = 4,},
     {id = "a_5",need_amount = 10000,point = 4,},
-    {id = "a_6",need_amount = 20,finish_type = "eat", tag = "unagi_ai",need_amount = 6,catagory = 4,point = 1,},
+    {id = "a_6",finish_type = "eat", tag = "unagi_ai",need_amount = 6,catagory = 4,point = 1,},
     {id = "a_7",finish_type = "addfollower", follower = "rocky",need_amount = 10,catagory = 9,point = 1,},
     {id = "a_8",finish_type = "kill",victim = "birchnutdrake",need_amount = 30,catagory = 2,point = 1,},
     {id = "a_9",finish_type = "kill",victim = "hutch",need_amount = 1,catagory = 2,point = 1,},
@@ -305,9 +315,16 @@ local config =
     {id = "boss_23",finish_type = "kill",victim = "alterguardian_phase2",need_amount = {3,},point = 1,},
     {id = "boss_24",finish_type = "kill",victim = "alterguardian_phase3",need_amount = {3,},point = 1,},
     {id = "boss_25",finish_type = "kill",victim = "eyeofterror",need_amount = {3,},point = 1,},
-    {id = "boss_26",finish_type = "kill",victim = "twinofterror1",need_amount = {3,},point = 1,},
-    {id = "boss_27",finish_type = "kill",victim = "twinofterror2",need_amount = {3,},point = 1,},
-    
+    {id = "boss_26",finish_type = "kill",victim = "twinofterror1",need_amount = {3,5,},point = 1,},
+    {id = "boss_27",finish_type = "kill",victim = "twinofterror2",need_amount = {3,5,},point = 1,},
+    {id = "boss_28",finish_type = "kill",victim = "daywalker",need_amount = {3,5},point = 1,},
+    {id = "boss_29",finish_type = "kill",victim = "daywalker2",need_amount = {3,5},point = 1,},
+    {id = "boss_30",finish_type = "kill",victim = "sharkboi",need_amount = {2,3,4,5},point = 1,},
+    {id = "boss_31",finish_type = "kill",victim = "mutatedbearger",need_amount = {2,4,5},point = 1,},
+    {id = "boss_32",finish_type = "kill",victim = "mutateddeerclops",need_amount = {2,4,5},point = 1,},
+
+
+
     {id = "killbyrose",finish_type = "death",cause = "flower",catagory = 10, need_amount = 1,point = 1,},
     {id = "eatleafymeatsouffle",finish_type = "eat",food = "leafymeatsouffle",catagory = 4, need_amount = 10,point = 1,},
     {id = "reviveamulet",catagory = 9, need_amount = 5,point = 1,},
@@ -324,7 +341,17 @@ local config =
     {id = "killeyeofterror",finish_type = "kill",victim = "eyeofterror",need_amount = 1,catagory = 3,point = 2,},
     {id = "killtwinofterror1",finish_type = "kill",victim = "twinofterror1",need_amount = 1,catagory = 3,point = 3,},
     {id = "killtwinofterror2",finish_type = "kill",victim = "twinofterror2",need_amount = 1,catagory = 3,point = 4,},
+    
 
+    {id = "killshadowthrall_hands",finish_type = "kill",victim = "shadowthrall_hands",need_amount = 1,catagory = 3,point = 1,},
+    {id = "killshadowthrall_wings",finish_type = "kill",victim = "shadowthrall_wings",need_amount = 1,catagory = 3,point = 1,},
+    {id = "killshadowthrall_horns",finish_type = "kill",victim = "shadowthrall_horns",need_amount = 1,catagory = 3,point = 1,},
+    {id = "killdaywalker",finish_type = "kill",victim = "daywalker",need_amount = 1,catagory = 3,point = 3,},
+    {id = "killdaywalker2",finish_type = "kill",victim = "daywalker2",need_amount = 1,catagory = 3,point = 3,},
+    {id = "killsharkboi",finish_type = "kill",victim = "sharkboi",need_amount = 1,catagory = 3,point = 3,},
+    {id = "killarchive_centipede",finish_type = "kill",victim = "archive_centipede",need_amount = 1,catagory = 3,point = 2,},
+    {id = "killlunarthrall_plant",finish_type = "kill",victim = "lunarthrall_plant",need_amount = 12,catagory = 3,point = 1,},
+    
     {id = "all",need_amount = 1,catagory = 9,point = 10,},
 }
 

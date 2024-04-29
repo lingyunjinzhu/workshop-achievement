@@ -142,6 +142,15 @@ STRINGS.ACHIEVEMENT_FIRE_FLY_LIGHT =
    [4] = "Care Off + Effect Off",
 }
 
+STRINGS.ACHIEVEMENT_WORMWOOD_EFFECT = 
+{
+  [1] = "wormwood effect 1",
+  [2] = "wormwood effect 2",
+  [3] = "wormwood effect 3",
+  [4] = "wormwood effect close",
+}
+
+
 STRINGS.LEVLE_INFO = "Lv.%d %d/%d +%dEXP"
 STRINGS.ACHIEVEMENT_FINISH = "%s %s achieved achievement [%s]"
 STRINGS.ACHIEVEMENT_AWARD = "[%s] got achievement points %d"
@@ -873,6 +882,42 @@ STRINGS.ACHIEVEMENT_LIST =
     name = "Famine on the Bite of the TongueⅩ",
     desc = "Eat %d seafood food stalls",
   },
+
+  ["a_meatysalad"] =
+   {
+     name = "balanced diet",
+     desc = "Eat %d beef greens",
+   },
+   ["a_koalefig_trunk"] =
+   {
+     name = "balanced diet",
+     desc = "Eat %d fig-stuffed elephant trunks",
+   },
+
+   ["a_frozenbananadaiquiri"] =
+   {
+     name = "balanced diet",
+     desc = "Eat %d ice banana jelly lip gloss",
+   },
+
+   ["a_shroomcake"] =
+   {
+     name = "balanced diet",
+     desc = "Eat %d mushroom cakes",
+   },
+
+   ["a_sweettea"] =
+   {
+     name = "Relax",
+     desc = "Eat %d soothing tea",
+   },
+
+   ["a_bunnystew"] =
+   {
+     name = "balanced diet",
+     desc = "Eat %d stewed rabbits",
+   },
+
   ["a_tigershark"] =
   {
     name = "Escape from the Tiger's Mouth",
@@ -1858,6 +1903,86 @@ STRINGS.ACHIEVEMENT_LIST =
     name = "Famine",
     desc = "Dead of hunger",
   },
+  ["killlordfruitfly"] = 
+  { 
+    name =  "果蝇王",
+    desc =  "孟德尔的杂交实验",
+  },
+  ["killalterguardian_phase1"] = 
+  { 
+    name =  "天体守卫",
+    desc =  "击杀天体守卫形态1",
+  },
+  ["killalterguardian_phase2"] = 
+  { 
+    name =  "天体守卫-再战",
+    desc =  "击杀天体守卫形态2",
+  },
+  ["killalterguardian_phase3"] = 
+  { 
+    name =  "天体守卫-本来面目",
+    desc =  "击杀天体守卫形态3",
+  },
+  ["killeyeofterror"] = 
+  { 
+    name =  "恐怖之眼",
+    desc =  "击杀恐怖之眼",
+  },
+  ["killtwinofterror1"] = 
+  { 
+    name =  "激光眼",
+    desc =  "击杀双子魔眼-激光眼",
+  },
+  ["killtwinofterror2"] = 
+  { 
+    name =  "魔焰眼",
+    desc =  "击杀双子魔眼-魔焰眼",
+  },
+
+  ["killshadowthrall_hands"] = 
+  { 
+    name =  "墨荒-手",
+    desc =  "击杀墨荒-手",
+  },
+  ["killshadowthrall_wings"] = 
+  { 
+    name =  "墨荒-翅膀",
+    desc =  "击杀墨荒-翅膀",
+  },
+  ["killshadowthrall_horns"] = 
+  { 
+    name =  "墨荒-头",
+    desc =  "击杀墨荒-头",
+  },
+
+  ["killdaywalker"] = 
+  { 
+    name =  "梦魇疯猪",
+    desc =  "击杀梦魇疯猪",
+  },
+  ["killdaywalker2"] = 
+  { 
+    name =  "拾荒疯猪",
+    desc =  "击杀拾荒疯猪",
+  },
+  ["killsharkboi"] = 
+  { 
+    name =  "大霜鲨",
+    desc =  "击杀大霜鲨",
+  },
+  ["killarchive_centipede"] = 
+  { 
+    name =  "远古哨兵蜈蚣",
+    desc =  "击杀远古哨兵蜈蚣",
+  },
+
+  ["killlunarthrall_plant"] = 
+  { 
+    name =  "致命亮茄",
+    desc =  "让你寄生我的植物！",
+  },
+
+
 }
 STRINGS.TITLE_INFO = "%s\nLv.%d EXP:%d/%d\n%s\n"
 STRINGS.HAS_ABILITY = "Already have ability [%s]"

@@ -1,5 +1,10 @@
 -- GLOBAL.CHEATS_ENABLED = true
 -- GLOBAL.require( 'debugkeys' )
+GLOBAL.setmetatable(env, {
+    __index = function(t, k)
+        return GLOBAL.rawget(GLOBAL, k)
+    end
+})
 local _G = GLOBAL
 local require = GLOBAL.require
 local ipairs =GLOBAL.ipairs
@@ -14,7 +19,6 @@ local TimeEvent = GLOBAL.TimeEvent
 local FRAMES = GLOBAL.FRAMES
 local ActionHandler = GLOBAL.ActionHandler
 local ACTIONS = GLOBAL.ACTIONS
-
 local achievement_config = require("Achievement.achievement_config")
 local achievement_ability_config = require("Achievement.achievement_ability_config")
 local ability_cost = achievement_ability_config.ability_cost
@@ -23,6 +27,7 @@ local can_hide_hud = GetModConfigData("can_hide_hud")
 local language_package = "Achievement.strings_achievement_" .. language
 require(language_package)
 require "Achievement.allachivrpc"
+require 'achievement_debugcommands'
 TUNING.CHECKCOIN = GetModConfigData("checkcoin")
 TUNING.CHECKSTART = GetModConfigData("checkstart")
 TUNING.BOSSSUP = GetModConfigData("bossstrengthen")
@@ -136,7 +141,9 @@ local foodnamelist = {
 
 "seafoodgumbo","surfnturf","californiaroll",
 "lobsterbisque","lobsterdinner",
-"meatysalad","leafymeatsouffle",
+"meatysalad","leafymeatsouffle","sweettea","bunnystew",
+"bisque","koalefig_trunk","frozenbananadaiquiri","shroomcake",
+
 }
 
 for k,v in pairs(foodnamelist) do
@@ -158,52 +165,52 @@ for k,v in pairs(foodnamelist) do
 end
 
 --独立同名书本，解决与可做书人物冲突的问题
-AddRecipe("achivbook_birds", {Ingredient("papyrus", 2),Ingredient("bird_egg", 2)},
-RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivbookbuilder", 
-"images/inventoryimages.xml", "book_birds.tex",nil,"book_birds")
+-- AddRecipe("achivbook_birds", {Ingredient("papyrus", 2),Ingredient("bird_egg", 2)},
+-- RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivbookbuilder", 
+-- "images/inventoryimages.xml", "book_birds.tex",nil,"book_birds")
 
-AddRecipe("achivbook_gardening", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("seeds", 1), GLOBAL.Ingredient("poop", 1)},
-RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivbookbuilder", 
-"images/inventoryimages.xml", "book_gardening.tex" ,nil,"book_gardening")
+-- AddRecipe("achivbook_gardening", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("seeds", 1), GLOBAL.Ingredient("poop", 1)},
+-- RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivbookbuilder", 
+-- "images/inventoryimages.xml", "book_gardening.tex" ,nil,"book_gardening")
 
-AddRecipe("achivbook_sleep", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("nightmarefuel", 2)}, 
-RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivbookbuilder", 
-"images/inventoryimages.xml", "book_sleep.tex" ,nil,"book_sleep")
+-- AddRecipe("achivbook_sleep", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("nightmarefuel", 2)}, 
+-- RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivbookbuilder", 
+-- "images/inventoryimages.xml", "book_sleep.tex" ,nil,"book_sleep")
 
-AddRecipe("achivbook_brimstone", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("redgem", 1)}, 
-RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivbookbuilder", 
-"images/inventoryimages.xml", "book_brimstone.tex" ,nil,"book_brimstone")
+-- AddRecipe("achivbook_brimstone", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("redgem", 1)}, 
+-- RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivbookbuilder", 
+-- "images/inventoryimages.xml", "book_brimstone.tex" ,nil,"book_brimstone")
 
-AddRecipe("achivbook_tentacles", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("tentaclespots", 1)}, 
-RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivbookbuilder", 
-"images/inventoryimages.xml", "book_tentacles.tex" ,nil,"book_tentacles")
+-- AddRecipe("achivbook_tentacles", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("tentaclespots", 1)}, 
+-- RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivbookbuilder", 
+-- "images/inventoryimages.xml", "book_tentacles.tex" ,nil,"book_tentacles")
 
-AddRecipe("achivbook_meteor2", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("moonrocknugget", 3), GLOBAL.Ingredient("yellowgem", 1)}, 
-RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivbookbuilder", 
-"images/inventoryimages/achivbook_meteor.xml", "achivbook_meteor.tex" ,nil,"achivbook_meteor")
+-- AddRecipe("achivbook_meteor2", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("moonrocknugget", 3), GLOBAL.Ingredient("yellowgem", 1)}, 
+-- RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivbookbuilder", 
+-- "images/inventoryimages/achivbook_meteor.xml", "achivbook_meteor.tex" ,nil,"achivbook_meteor")
 
-AddRecipe("achivbook_shakespeare2", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("purplegem", 1), GLOBAL.Ingredient("orangegem", 1)}, 
-RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivbookbuilder", 
-"images/inventoryimages/achivbook_shakespeare.xml", "achivbook_shakespeare.tex" ,nil,"achivbook_shakespeare")
+-- AddRecipe("achivbook_shakespeare2", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("purplegem", 1), GLOBAL.Ingredient("orangegem", 1)}, 
+-- RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivbookbuilder", 
+-- "images/inventoryimages/achivbook_shakespeare.xml", "achivbook_shakespeare.tex" ,nil,"achivbook_shakespeare")
 
 --老买的书
-AddRecipe("waxwelljournal2", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("nightmarefuel", 2), GLOBAL.Ingredient(GLOBAL.CHARACTER_INGREDIENT.HEALTH, 50)}, 
-RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivshadowmagicbuilder_DONT", 
-"images/inventoryimages.xml", "waxwelljournal.tex" ,nil,"waxwelljournal")
+-- AddRecipe("waxwelljournal2", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("nightmarefuel", 2), GLOBAL.Ingredient(GLOBAL.CHARACTER_INGREDIENT.HEALTH, 50)}, 
+-- RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivshadowmagicbuilder_DONT", 
+-- "images/inventoryimages.xml", "waxwelljournal.tex" ,nil,"waxwelljournal")
 
 --老麦的影子
-AddRecipe("shadowlumber_builder2", {GLOBAL.Ingredient("nightmarefuel", 2), GLOBAL.Ingredient("axe", 1), GLOBAL.Ingredient(GLOBAL.CHARACTER_INGREDIENT.MAX_SANITY, GLOBAL.TUNING.SHADOWWAXWELL_SANITY_PENALTY.SHADOWLUMBER)}, 
-RECIPETABS.MAGIC, SHADOW_TWO, nil, nil, true, nil, "achivshadowmagicbuilder", 
-"images/inventoryimages.xml", "shadowlumber_builder.tex" ,nil,"shadowlumber_builder")
-AddRecipe("shadowminer_builder2", {GLOBAL.Ingredient("nightmarefuel", 2), GLOBAL.Ingredient("pickaxe", 1), GLOBAL.Ingredient(GLOBAL.CHARACTER_INGREDIENT.MAX_SANITY, GLOBAL.TUNING.SHADOWWAXWELL_SANITY_PENALTY.SHADOWMINER)}, 
-RECIPETABS.MAGIC, SHADOW_TWO, nil, nil, true, nil, "achivshadowmagicbuilder", 
-"images/inventoryimages.xml", "shadowminer_builder.tex" ,nil,"shadowminer_builder")
-AddRecipe("shadowdigger_builder2", {GLOBAL.Ingredient("nightmarefuel", 2), GLOBAL.Ingredient("shovel", 1), GLOBAL.Ingredient(GLOBAL.CHARACTER_INGREDIENT.MAX_SANITY, GLOBAL.TUNING.SHADOWWAXWELL_SANITY_PENALTY.SHADOWDIGGER)}, 
-RECIPETABS.MAGIC, SHADOW_TWO, nil, nil, true, nil, "achivshadowmagicbuilder", 
-"images/inventoryimages.xml", "shadowdigger_builder.tex" ,nil,"shadowdigger_builder")
-AddRecipe("shadowduelist_builder2", {GLOBAL.Ingredient("nightmarefuel", 2), GLOBAL.Ingredient("spear", 1), GLOBAL.Ingredient(GLOBAL.CHARACTER_INGREDIENT.MAX_SANITY, GLOBAL.TUNING.SHADOWWAXWELL_SANITY_PENALTY.SHADOWDUELIST)}, 
-RECIPETABS.MAGIC, SHADOW_TWO, nil, nil, true, nil, "achivshadowmagicbuilder", 
-"images/inventoryimages.xml", "shadowduelist_builder.tex" ,nil,"shadowduelist_builder")
+-- AddRecipe("shadowlumber_builder2", {GLOBAL.Ingredient("nightmarefuel", 2), GLOBAL.Ingredient("axe", 1), GLOBAL.Ingredient(GLOBAL.CHARACTER_INGREDIENT.MAX_SANITY, GLOBAL.TUNING.SHADOWWAXWELL_SANITY_PENALTY.SHADOWLUMBER)}, 
+-- RECIPETABS.MAGIC, SHADOW_TWO, nil, nil, true, nil, "achivshadowmagicbuilder", 
+-- "images/inventoryimages.xml", "shadowlumber_builder.tex" ,nil,"shadowlumber_builder")
+-- AddRecipe("shadowminer_builder2", {GLOBAL.Ingredient("nightmarefuel", 2), GLOBAL.Ingredient("pickaxe", 1), GLOBAL.Ingredient(GLOBAL.CHARACTER_INGREDIENT.MAX_SANITY, GLOBAL.TUNING.SHADOWWAXWELL_SANITY_PENALTY.SHADOWMINER)}, 
+-- RECIPETABS.MAGIC, SHADOW_TWO, nil, nil, true, nil, "achivshadowmagicbuilder", 
+-- "images/inventoryimages.xml", "shadowminer_builder.tex" ,nil,"shadowminer_builder")
+-- AddRecipe("shadowdigger_builder2", {GLOBAL.Ingredient("nightmarefuel", 2), GLOBAL.Ingredient("shovel", 1), GLOBAL.Ingredient(GLOBAL.CHARACTER_INGREDIENT.MAX_SANITY, GLOBAL.TUNING.SHADOWWAXWELL_SANITY_PENALTY.SHADOWDIGGER)}, 
+-- RECIPETABS.MAGIC, SHADOW_TWO, nil, nil, true, nil, "achivshadowmagicbuilder", 
+-- "images/inventoryimages.xml", "shadowdigger_builder.tex" ,nil,"shadowdigger_builder")
+-- AddRecipe("shadowduelist_builder2", {GLOBAL.Ingredient("nightmarefuel", 2), GLOBAL.Ingredient("spear", 1), GLOBAL.Ingredient(GLOBAL.CHARACTER_INGREDIENT.MAX_SANITY, GLOBAL.TUNING.SHADOWWAXWELL_SANITY_PENALTY.SHADOWDUELIST)}, 
+-- RECIPETABS.MAGIC, SHADOW_TWO, nil, nil, true, nil, "achivshadowmagicbuilder", 
+-- "images/inventoryimages.xml", "shadowduelist_builder.tex" ,nil,"shadowduelist_builder")
 
 --wickerbottom
 AddRecipe("achivbook_meteor", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("moonrocknugget", 3), GLOBAL.Ingredient("yellowgem", 1)}, 
@@ -638,7 +645,7 @@ AddPlayerPostInit(function(inst)
     end
 
     if inst.prefab ~= "wanda" then
-        inst:AddTag("clockmaker")
+        --inst:AddTag("clockmaker")
     end
     if inst.OnNewSpawn then
         local function OnPlayerNewSpawn(inst)
@@ -774,23 +781,75 @@ AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.HARVEST, funct
         end))
 
 --阿比盖尔杀死怪物   leader也增加exp和killamount
+local abigail_kill = function(inst, data)
+    local leader = nil
+    if inst.components.follower and  inst.components.follower.leader then
+        leader = inst.components.follower.leader
+    end
+    if leader and  leader.components.achievementability.level == true  and leader:HasTag("player") then
+        if data.victim and data.victim.components.combat and leader.achivhaskill == nil then 
+            leader.components.achievementability:calc_killamount(leader,data)
+            leader.components.achievementmanager:checkGetSoul(leader, data)
+            leader.components.achievementmanager:checkkill(leader,data.victim)
+            leader.components.achievementmanager:check_kill_exp(leader,data.victim)
+        end 
+    end
+end
+
 AddPrefabPostInit("abigail", function(inst)
-    inst:ListenForEvent("killed", function(inst, data)
-        local leader = nil
-        if inst.components.follower and  inst.components.follower.leader then
-            leader = inst.components.follower.leader
-        end
-        if leader and  leader.components.achievementability.level == true  and leader:HasTag("player") then
-            if data.victim and data.victim.components.combat and leader.achivhaskill == nil then 
-                leader.components.achievementability:calc_killamount(leader,data)
-                leader.components.achievementmanager:checkGetSoul(leader, data)
-                leader.components.achievementmanager:checkkill(leader,data.victim)
-                leader.components.achievementmanager:check_kill_exp(leader,data.victim)
-            end 
-        end
-    end)
+    inst:ListenForEvent("killed", abigail_kill)    
 end)
 
+AddComponentPostInit("health", function(self)
+    function self:SetVal(val, cause, afflicter)
+        local old_health = self.currenthealth
+        local max_health = self:GetMaxWithPenalty()
+        local min_health = math.min(self.minhealth or 0, max_health)
+    
+        if val > max_health then
+            val = max_health
+        end
+        if val <= min_health then
+            self.currenthealth = min_health
+            self.inst:PushEvent("minhealth", { cause = cause, afflicter = afflicter })
+            if self.inst.prefab == "daywalker" or self.inst.prefab == "sharkboi" or self.inst.prefab == "daywalker2" then
+                if self.inst.attacker_userid and  self.inst.attacker_userid[1] then
+                    local attacker = UserToPlayer(self.inst.attacker_userid[1])
+                    local data = {
+                        victim = self.inst
+                    }
+                    attacker.components.achievementmanager:OnKilledCheck(attacker,data)
+                end
+            end
+
+        else
+            self.currenthealth = val
+        end
+    
+        if old_health > 0 and self.currenthealth <= 0 then
+            -- NOTES(JBK): Make sure to keep the events fired up to date with the explosive component.
+            --Push world event first, because the entity event may invalidate itself
+            --i.e. items that use .nofadeout and manually :Remove() on "death" event
+            TheWorld:PushEvent("entity_death", { inst = self.inst, cause = cause, afflicter = afflicter })
+            self.inst:PushEvent("death", { cause = cause, afflicter = afflicter })
+    
+            --Here, check if killing player or monster
+            if(self.inst:HasTag("player")) then
+                NotifyPlayerProgress("TotalPlayersKilled", 1, afflicter);
+            else
+                NotifyPlayerProgress("TotalEnemiesKilled", 1, afflicter);
+            end
+    
+            --V2C: If "death" handler removes ourself, then the prefab should explicitly set nofadeout = true.
+            --     Intentionally NOT using IsValid() here to hide those bugs.
+            if not self.nofadeout then
+                self.inst:AddTag("NOCLICK")
+                self.inst.persists = false
+                self.inst:DoTaskInTime(self.destroytime or 2, ErodeAway)
+            end
+        end
+    end
+end)
 ----------------------------------------------------------------------------------------------------
 --BOSS SKILL
 ---是否加强-------------------------------------------------------------------

@@ -293,6 +293,7 @@ function achievementability:jumpfn(inst)
         end
     end)
     inst:ListenForEvent("onhitother", function(inst, data)
+
         local target = data.target
         if self.jump and target and   target.components.freezable  ~= nil  and not target:HasTag("wall") and self.attackcheck ~= true and self.frozenswitch then
             local rand2 = math.random()
@@ -304,14 +305,13 @@ function achievementability:jumpfn(inst)
             end
         end
 
-        if  target and target.components and target.components.freezable ~= nil  and not target:HasTag("wall") then
+        if  target and target.components and not target:HasTag("wall") then
             if target.attacker_userid == nil then 
                 target.attacker_userid = {}
             end
-
             local find_userid = false
             for i=1, #target.attacker_userid do
-                if  target.attacker_userid[i]  == inst.userid then
+                if  target.attacker_userid[i] == inst.userid then
                     find_userid = true
                 end
             end
@@ -564,16 +564,6 @@ function achievementability:electriccoin(inst)
         self:ongetcoin(inst)
         self.electricswitch = true
     end
-end
---电击获取
-function achievementability:electricfn(inst)
-    if  self.electric >= 1  then
-        if inst.components.debuffable ~= nil and inst.components.debuffable:IsEnabled() and
-            not (inst.components.health ~= nil and inst.components.health:IsDead()) and
-            not inst:HasTag("playerghost") then
-            inst.components.debuffable:AddDebuff("buff_electricattack", "buff_electricattack")
-        end
-    end
     if  self.electric >= 1  then
         if  inst.components.health and inst.components.health.currenthealth > 0 and not inst:HasTag("playerghost") and self.electricswitch then
             if inst._aifx2 == nil then            
@@ -589,6 +579,17 @@ function achievementability:electricfn(inst)
             end
         end
     end
+end
+--电击获取
+function achievementability:electricfn(inst)
+    if  self.electric >= 1  then
+        if inst.components.debuffable ~= nil and inst.components.debuffable:IsEnabled() and
+            not (inst.components.health ~= nil and inst.components.health:IsDead()) and
+            not inst:HasTag("playerghost") and not inst.components.debuffable:HasDebuff("buff_electricattack") then
+            inst.components.debuffable:AddDebuff("buff_electricattack", "buff_electricattack")
+        end
+    end
+    
 end
 
 
@@ -877,12 +878,17 @@ function achievementability:plantfriendcoin(inst)
     if self.effectswitch == false then
         self.effectswitch = true
         self.effectstype = 1
+        inst.components.talker:Say(STRINGS.ACHIEVEMENT_WORMWOOD_EFFECT[self.effectstype])
     elseif self.effectstype == 1 then
         self.effectstype = 2
+        inst.components.talker:Say(STRINGS.ACHIEVEMENT_WORMWOOD_EFFECT[self.effectstype])
     elseif self.effectstype == 2 then
         self.effectstype = 3
+        inst.components.talker:Say(STRINGS.ACHIEVEMENT_WORMWOOD_EFFECT[self.effectstype])
     else
         self.effectswitch = false
+        self.effectstype = 4
+        inst.components.talker:Say(STRINGS.ACHIEVEMENT_WORMWOOD_EFFECT[self.effectstype])
     end
     if self.coinamount >= ability_cost["plantfriend"].cost and self.plantfriend == false and inst.prefab ~= "wormwood" then
         self.plantfriend = true
@@ -1698,8 +1704,18 @@ function achievementability:readerfn(inst)
 			inst:RemoveTag("aspiring_bookworm")
 		end
         if inst.prefab ~= "wickerbottom" and inst.prefab ~= "waxwell" then
+            local speech_wilson = require("speech_wilson")
+            local speech_wickerbottom = require("speech_wickerbottom")
+
+            if speech_wilson.ACTIONFAIL.READ == nil then
+                speech_wilson.ACTIONFAIL.READ = speech_wickerbottom.ACTIONFAIL.READ
+            else
+                speech_wilson.ACTIONFAIL.READ = MergeMaps(speech_wilson.ACTIONFAIL.READ, speech_wickerbottom.ACTIONFAIL.READ)
+            end
+
             inst:AddComponent("reader")
         end
+        inst:AddTag("bookbuilder")
         inst:AddTag("achivbookbuilder")
     end
 end
@@ -2353,7 +2369,7 @@ end
 local function waxwell_common_postinit(inst)
     inst:AddTag("shadowmagic")
     inst:AddTag("dappereffects")
-    inst:AddTag("achivshadowmagicbuilder") --制作老麦的影子   不需要做书  直接在魔法栏建造影子
+    --inst:AddTag("achivshadowmagicbuilder") --制作老麦的影子   不需要做书  直接在魔法栏建造影子
     --reader (from reader component) added to pristine state for optimization
     inst:AddTag("reader")
 end
@@ -2399,7 +2415,7 @@ function achievementability:waxwellfriendRemove()
         inst:RemoveEventCallback("death", WaxwellOnDeath)
         inst:RemoveEventCallback("ms_becameghost", WaxwellOnDeath)
         inst:RemoveEventCallback("ms_playerreroll", WaxwellOnReroll)
-        inst:RemoveTag("achivshadowmagicbuilder")
+        --inst:RemoveTag("achivshadowmagicbuilder")
         inst.components.foodaffinity:RemovePrefabAffinity("lobsterdinner")
     end
 end
@@ -2729,8 +2745,11 @@ end
 
 function achievementability:fearlessRemove()
     local inst = self.inst
-    if self.fearless then
+    --if self.fearless then
         inst.woby.components.container:DropEverything()
+        --inst:RemoveChild(inst.components.rider.mount)
+        --self.inst:PushEvent("dismounted", { target = inst.woby })
+        --inst.components.rider:Dismount()
         OnWalterRemoveEntity(inst)
         inst:RemoveTag("expertchef")
         inst:RemoveTag("pebblemaker")
@@ -2755,7 +2774,7 @@ function achievementability:fearlessRemove()
         inst._woby_onremove = nil
         inst.OnWobyTransformed = nil
         inst:RemoveComponent("storyteller")
-    end
+    --end
 end
 
 
@@ -2832,10 +2851,10 @@ function achievementability:timemanagerfn(inst)
                 return result
             end
         end
-    else
-        if inst.prefab ~= "wanda" then
-            inst:RemoveTag("clockmaker")
-        end
+    -- else
+    --     if inst.prefab ~= "wanda" then
+    --         inst:RemoveTag("clockmaker")
+    --     end
     end
 end
 
@@ -3031,6 +3050,7 @@ function achievementability:resetbuff(inst)
     if inst.prefab ~= "wickerbottom" and inst.prefab ~= "waxwell" and inst.prefab ~= "wurt"  then
         inst:RemoveComponent("reader")
     end
+    inst:RemoveTag("bookbuilder")
     inst:RemoveTag("achivbookbuilder")
 
     inst.components.moisture.maxMoistureRate = .75
@@ -3040,7 +3060,12 @@ function achievementability:resetbuff(inst)
 
     -- walter ability remove
     if inst.prefab ~= "walter" then
-        self:fearlessRemove(inst)
+        inst.components.rider:Dismount()
+        if self.fearless then
+            inst:DoTaskInTime(1.5, function ()
+            self:fearlessRemove(inst)
+            end)
+        end
     end
     -- wendy ability remove
     if inst.prefab ~= "wendy" then
