@@ -1,3 +1,5 @@
+local catagory = require "Achievement.achievement_catagory"
+
 STRINGS.RECIPE_DESC.KLAUS_SACK = "Contains four-dimensional space"
 STRINGS.NAMES.DEER_ANTLER1 = "Deer Key"
 STRINGS.RECIPE_DESC.DEER_ANTLER1 = "The shape of an antler without eyes"
@@ -120,18 +122,19 @@ STRINGS.RECIPE_DESC.ACHIEVEMENT_MOONBASE = "A stone with moon power"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.ACHIEVEMENT_MOONBASE = "moonstone"
 
 STRINGS.ALLACHIEVE_RESET_CONFIRM = "Confirm?"
-STRINGS.ALLACHIEVE_RESET = "Reset abilities and \n return %s%% achievement points \n(the same is true for reselecting characters)"
-STRINGS.ALLACHIVITEM={
-[1] = "All",
-[2] = "Killing",
-[3] = "Guide",
-[4] = "Food",
-[5] = "Make",
-[6] = "Collection",
-[7] = "Time",
-[8] = "Work",
-[9] = "Other",
-[10] = "Mengxin",
+STRINGS.ALLACHIEVE_RESET = "Reset abilities and \n return %s%% (configable)achievement points \n(the same is true for reselecting characters)"
+STRINGS.ALLACHIVITEM =
+{
+  [catagory.ALL] = "All",
+  [catagory.KILL] = "Killing",
+  [catagory.GUIDE] = "Guide",
+  [catagory.FOOD] = "Food",
+  [catagory.MAKE] = "Make",
+  [catagory.COLLECT] = "Collection",
+  [catagory.TIME] = "Time",
+  [catagory.WORK] = "Work",
+  [catagory.DEATH] = "KILL",
+  [catagory.OTHER] = "DEATH",
 }
 
 STRINGS.ACHIEVEMENT_FIRE_FLY_LIGHT =
@@ -186,9 +189,16 @@ STRINGS.ACHIEVEMENT_FANCY_EFFECT_END = "Effect off"
 STRINGS.ACHIEVEMENT_PROCESS = "My achievement progress [%d/%d]"
 STRINGS.ACHIEVEMENT_POINT_AMOUNT = "Achievement Points: %d"
 STRINGS.ACHIEVEMENT_KILL_AMOUNT = "Kill value: %d"
+STRINGS.ACHIEVEMENT_LEVEL_AMOUNT = "Level: %d"
 STRINGS.ACHIEVEMENT_HAS_AWARD = "Achieved: %d/%d"
 STRINGS.ACHIEVEMENT_HAS_ABILITY = "Already have this ability"
 STRINGS.ACHIEVEMENT_ABILITY_NEED = "This ability requires %d points"
+
+STRINGS.EXP = "Exp:"
+STRINGS.REMAIN_POINT = "Available attribute points: %d"
+STRINGS.RESET_ATTRIBUTE = "Reset attributes"
+STRINGS.RESET_ATTRIBUTE_WARING = "Reset attributes and return %s%% (configurable) attribute points\n"
+
 STRINGS.ACHIEVEMENT_ANNOUNCE_POINT =
 {
   [1] = "Poor I only have %d achievement points",
@@ -200,9 +210,16 @@ STRINGS.ACHIEVEMENT_ANNOUNCE_POINT =
 STRINGS.ALLACHIVUISTRING={
     [1] = "Achievement",
     [2] = "Ability",
-    [3] = "Not available temporarily",
+    [3] = "Level",
 }
-    
+
+STRINGS.ATTRIBUTES =
+{
+   hunger = "hunger",
+   sanity = "sanity",
+   health = "health"
+}
+
 STRINGS.ACHIVABILITYNAME={
     ["thornss"] ="Thornss",
     ["woodieability"] ="Woody",

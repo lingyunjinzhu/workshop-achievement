@@ -1,8 +1,8 @@
 ChooseTranslationTable = ChooseTranslationTable or function() end
 name ="New Achivement"
-description = "Achievement (Reburn) 更新"
+description = "Achievement (Reburn)"
 author = "ACLegend"
-version = "2.3.0"
+version = "3.0.0"
 
 forumthread = ""
 
@@ -96,6 +96,16 @@ local MODINFO_NAME = {
         ["zh"] = "是否可按N显隐主面板",
         ["en"] = "press N to show and hide the main panel",
     },
+    RETRUN_ATTRIBUTE_POINT = {
+        "Rebate attribute points for reset attribute",
+        ["zh"] = "重置属性时返回属性点百分比",
+        ["en"] = "return attribute points percent",
+    },
+    LEVELUP_AWARD_ATTRIBUTE = {
+        "Attribute points gained for each upgrade",
+        ["zh"] = "每次升级获得的属性点",
+        ["en"] = "Attribute points gained for each upgrade",
+    },
 }
 configuration_options =
 {
@@ -150,7 +160,7 @@ configuration_options =
                         {description = "60%", data = 0.60},
                         {description = "50%", data = 0.50},
                     },
-        default = 0.95,
+        default = 0.9,
     },
     {
         name = "showtitle",
@@ -292,5 +302,42 @@ configuration_options =
             {description = "NO", data = false},
         },
         default = true,
+    },
+    {
+        name = "return_attribute_point",
+        label = ChooseTranslationTable(MODINFO_NAME.RETRUN_ATTRIBUTE_POINT),
+        hover = "Rebate attribute points for reset attribute",
+        options =   {
+     
+                        {description = "100%", data = 1.0},
+                        {description = "95%", data = 0.95},
+                        {description = "90%", data = 0.9},
+                        {description = "85%", data = 0.85},
+                        {description = "80%", data = 0.8},
+                        {description = "75%", data = 0.75},
+                        {description = "70%", data = 0.70},
+                        {description = "65%", data = 0.65},
+                        {description = "60%", data = 0.60},
+                        {description = "50%", data = 0.50},
+                    },
+        default = 0.90,
+    },
+    {
+        name = "attribute_points_gained",
+        label = ChooseTranslationTable(MODINFO_NAME.LEVELUP_AWARD_ATTRIBUTE),
+        hover = "finsh achievement cost",
+        options =   {
+            {description = "1",hover = "1", data = 1},
+            {description = "2",hover = "2", data = 2},
+            {description = "3",hover = "3", data = 3},
+            {description = "4",hover = "4", data = 4},
+            {description = "5",hover = "5", data = 5},
+            {description = "6",hover = "6", data = 6},
+            {description = "7",hover = "7", data = 7},
+            {description = "8",hover = "8", data = 8},
+            {description = "9",hover = "9", data = 9},
+            {description = "10",hover = "10", data = 10},
+        },
+        default = 1,
     },
 }

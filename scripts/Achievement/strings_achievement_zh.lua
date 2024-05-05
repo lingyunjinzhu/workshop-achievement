@@ -1,3 +1,5 @@
+local catagory = require "Achievement.achievement_catagory"
+
 STRINGS.RECIPE_DESC.KLAUS_SACK = "内含四次元空间"
 
 STRINGS.NAMES.DEER_ANTLER1 = "鹿之匙"
@@ -177,19 +179,19 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.ACHIV_GHOSTLYELIXIR_SPEED = STRINGS.CHARACTE
 
 --------------------------------------------------------------------------------------------------------------------------
 STRINGS.ALLACHIEVE_RESET_CONFIRM = "确定重置？"
-STRINGS.ALLACHIEVE_RESET = "重置能力，并返换%s%%的成就点\n（重选角色也也一样）"
+STRINGS.ALLACHIEVE_RESET = "重置能力，并返换%s%%(可配置)的成就点\n（重选角色也也一样）"
 
 STRINGS.ALLACHIVITEM={
-[1] = "全部",
-[2] = "杀戮",
-[3] = "攻略",
-[4] = "食物",
-[5] = "制作",
-[6] = "采集",
-[7] = "时间",
-[8] = "工作",
-[9] = "其它",
-[10] = "死亡",
+[catagory.ALL] = "全部",
+[catagory.KILL] = "杀戮",
+[catagory.GUIDE] = "攻略",
+[catagory.FOOD] = "食物",
+[catagory.MAKE] = "制作",
+[catagory.COLLECT] = "采集",
+[catagory.TIME] = "时间",
+[catagory.WORK] = "工作",
+[catagory.DEATH] = "死亡",
+[catagory.OTHER] = "其它",
 }
 
 STRINGS.ACHIEVEMENT_FIRE_FLY_LIGHT = 
@@ -243,9 +245,16 @@ STRINGS.ACHIEVEMENT_FANCY_EFFECT_END = "效果关闭"
 STRINGS.ACHIEVEMENT_PROCESS = "我的成就进度【%d/%d】"
 STRINGS.ACHIEVEMENT_POINT_AMOUNT = "成就点： %d"
 STRINGS.ACHIEVEMENT_KILL_AMOUNT = "杀戮值: %d"
+STRINGS.ACHIEVEMENT_LEVEL_AMOUNT = "等级: %d"
 STRINGS.ACHIEVEMENT_HAS_AWARD = "已获得：%d/%d"
 STRINGS.ACHIEVEMENT_HAS_ABILITY = "已拥有该能力"
 STRINGS.ACHIEVEMENT_ABILITY_NEED = "该能力需%d点"
+
+STRINGS.EXP = "经验："
+STRINGS.REMAIN_POINT = "可用属性点：%d"
+STRINGS.RESET_ATTRIBUTE = "重置属性"
+STRINGS.RESET_ATTRIBUTE_WARING = "重置属性，并返换%s%%(可配置)的属性点\n"
+
 STRINGS.ACHIEVEMENT_ANNOUNCE_POINT =
 {
   [1] = "可怜的我只有%d点成就点了",
@@ -257,8 +266,16 @@ STRINGS.ACHIEVEMENT_ANNOUNCE_POINT =
 STRINGS.ALLACHIVUISTRING={
 [1] = "成就",
 [2] = "能力",
-[3] = "暂不可用",
+[3] = "等级",
 }
+
+STRINGS.ATTRIBUTES =
+{
+  hunger = "饥饿",
+  sanity = "精神",
+  health = "生命"
+}
+
 
 STRINGS.ACHIVABILITYNAME={
 ["thornss"] ="被动反伤",

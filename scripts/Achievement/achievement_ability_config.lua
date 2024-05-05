@@ -46,18 +46,25 @@ local achievement_ability_config = {
         {ability = "timemanager", cost = 88, default_value = false,},
         --{ability = "moonaltar", cost = 20,default_value = false,},
     },
-    ability_ratio={
-    ["thornss"] = 1,
-    ["electric"] = 1,
-    ["firmarmor"] = 1,
-    ["woodieability"] = TUNING.WILSON_HUNGER_RATE*.02,
-    ["healthregen"] = .2,
-    ["plantfriend"] = .2,
-    ["speedup"] = .05,
-    ["damageup"] = .05,
-    ["absorbup"] = .05,
-    ["crit"] = 5,
-    }
+    ability_ratio=
+    {
+        ["thornss"] = 1,
+        ["electric"] = 1,
+        ["firmarmor"] = 1,
+        ["woodieability"] = TUNING.WILSON_HUNGER_RATE*.02,
+        ["healthregen"] = .2,
+        ["plantfriend"] = .2,
+        ["speedup"] = .05,
+        ["damageup"] = .05,
+        ["absorbup"] = .05,
+        ["crit"] = 5,
+    },
+    attributes_cost = 
+    {
+        ["hungerup"] = 1,
+        ["sanityup"] = 1,
+        ["healthup"] = 1,
+    },
     
 }
 local modname = KnownModIndex:GetModActualName("New Achivement")

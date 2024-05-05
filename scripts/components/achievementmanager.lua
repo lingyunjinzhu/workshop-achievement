@@ -357,6 +357,7 @@ function achievementmanager:sumexp(inst, foodexp)
    		self.currenta_a2amount = self.currenta_a2amount - self.currenta_a3amount
         self.currenta_a3amount = self.currenta_a3amount  + 100    --升级需要de经验
         self.currenta_a4amount = self.currenta_a4amount + 1    --等级 
+        self.inst.components.achievementability.attributepointamount = self.inst.components.achievementability.attributepointamount + TUNING.ATTRIBUTE_POINTS_GAINED -- 属性点
         self:seffc(inst, "a_a4")
     end
     self.inst:PushEvent("updateTitle", 

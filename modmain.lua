@@ -32,6 +32,8 @@ TUNING.CHECKCOIN = GetModConfigData("checkcoin")
 TUNING.CHECKSTART = GetModConfigData("checkstart")
 TUNING.BOSSSUP = GetModConfigData("bossstrengthen")
 TUNING.RETRUN_POINT = GetModConfigData("returnpoint")
+TUNING.RETRUN_ATTRIBUTE_POINT = GetModConfigData("return_attribute_point")
+TUNING.ATTRIBUTE_POINTS_GAINED = GetModConfigData("attribute_points_gained")
 TUNING.ACHIEVEMENT_FIRSTINIT = 0
 local SHOW_TITLE = GetModConfigData("showtitle")
 local IsServer = _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated()
@@ -111,6 +113,7 @@ local buttonimageslist = {
 "config_act","config_dact","config_bg","config_bigger","config_smaller","config_drag","config_remove",
 "remove_info_cn", "remove_info_en","remove_yes","remove_no",
 "item_head_act","item_head_dact", "item_mide_act","item_mide_dact","item_tail_act","item_tail_dact",
+"button_normal",
 }
 
 for k,v in pairs(buttonimageslist) do
@@ -192,25 +195,6 @@ end
 -- AddRecipe("achivbook_shakespeare2", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("purplegem", 1), GLOBAL.Ingredient("orangegem", 1)}, 
 -- RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivbookbuilder", 
 -- "images/inventoryimages/achivbook_shakespeare.xml", "achivbook_shakespeare.tex" ,nil,"achivbook_shakespeare")
-
---老买的书
--- AddRecipe("waxwelljournal2", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("nightmarefuel", 2), GLOBAL.Ingredient(GLOBAL.CHARACTER_INGREDIENT.HEALTH, 50)}, 
--- RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivshadowmagicbuilder_DONT", 
--- "images/inventoryimages.xml", "waxwelljournal.tex" ,nil,"waxwelljournal")
-
---老麦的影子
--- AddRecipe("shadowlumber_builder2", {GLOBAL.Ingredient("nightmarefuel", 2), GLOBAL.Ingredient("axe", 1), GLOBAL.Ingredient(GLOBAL.CHARACTER_INGREDIENT.MAX_SANITY, GLOBAL.TUNING.SHADOWWAXWELL_SANITY_PENALTY.SHADOWLUMBER)}, 
--- RECIPETABS.MAGIC, SHADOW_TWO, nil, nil, true, nil, "achivshadowmagicbuilder", 
--- "images/inventoryimages.xml", "shadowlumber_builder.tex" ,nil,"shadowlumber_builder")
--- AddRecipe("shadowminer_builder2", {GLOBAL.Ingredient("nightmarefuel", 2), GLOBAL.Ingredient("pickaxe", 1), GLOBAL.Ingredient(GLOBAL.CHARACTER_INGREDIENT.MAX_SANITY, GLOBAL.TUNING.SHADOWWAXWELL_SANITY_PENALTY.SHADOWMINER)}, 
--- RECIPETABS.MAGIC, SHADOW_TWO, nil, nil, true, nil, "achivshadowmagicbuilder", 
--- "images/inventoryimages.xml", "shadowminer_builder.tex" ,nil,"shadowminer_builder")
--- AddRecipe("shadowdigger_builder2", {GLOBAL.Ingredient("nightmarefuel", 2), GLOBAL.Ingredient("shovel", 1), GLOBAL.Ingredient(GLOBAL.CHARACTER_INGREDIENT.MAX_SANITY, GLOBAL.TUNING.SHADOWWAXWELL_SANITY_PENALTY.SHADOWDIGGER)}, 
--- RECIPETABS.MAGIC, SHADOW_TWO, nil, nil, true, nil, "achivshadowmagicbuilder", 
--- "images/inventoryimages.xml", "shadowdigger_builder.tex" ,nil,"shadowdigger_builder")
--- AddRecipe("shadowduelist_builder2", {GLOBAL.Ingredient("nightmarefuel", 2), GLOBAL.Ingredient("spear", 1), GLOBAL.Ingredient(GLOBAL.CHARACTER_INGREDIENT.MAX_SANITY, GLOBAL.TUNING.SHADOWWAXWELL_SANITY_PENALTY.SHADOWDUELIST)}, 
--- RECIPETABS.MAGIC, SHADOW_TWO, nil, nil, true, nil, "achivshadowmagicbuilder", 
--- "images/inventoryimages.xml", "shadowduelist_builder.tex" ,nil,"shadowduelist_builder")
 
 --wickerbottom
 AddRecipe("achivbook_meteor", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("moonrocknugget", 3), GLOBAL.Ingredient("yellowgem", 1)}, 
@@ -408,25 +392,6 @@ AddRecipe("achiv_table_winters_feast", {Ingredient("boards", 1), Ingredient("bee
 nil,nil,nil,"achive_science","images/inventoryimages2.xml",
 "table_winters_feast.tex",nil,"table_winters_feast")
 
--- --温蒂制造栏里的药水---------------------------------------------------------------------------------
--- AddRecipe("achiv_ghostlyelixir_slowregen", {Ingredient("spidergland",1),Ingredient("ghostflower",1)}, RECIPETABS.REFINE, TECH.NONE, nil,nil,nil,nil,"achive_elixirbrewer","images/inventoryimages1.xml",
--- "ghostlyelixir_slowregen.tex",nil,"ghostlyelixir_slowregen")
-
--- AddRecipe("achiv_ghostlyelixir_fastregen", {Ingredient("reviver",1),Ingredient("ghostflower",3)}, RECIPETABS.REFINE, TECH.NONE, nil,nil,nil,nil,"achive_elixirbrewer","images/inventoryimages1.xml",
--- "ghostlyelixir_fastregen.tex",nil,"ghostlyelixir_fastregen")
-
--- AddRecipe("achiv_ghostlyelixir_shield", {Ingredient("log",1),Ingredient("ghostflower",1)}, RECIPETABS.REFINE, TECH.NONE, nil,nil,nil,nil,"achive_elixirbrewer","images/inventoryimages1.xml",
--- "ghostlyelixir_shield.tex",nil,"ghostlyelixir_shield")
-
--- AddRecipe("achiv_ghostlyelixir_retaliation", {Ingredient("livinglog",1),Ingredient("ghostflower",3)}, RECIPETABS.REFINE, TECH.NONE, nil,nil,nil,nil,"achive_elixirbrewer","images/inventoryimages1.xml",
--- "ghostlyelixir_retaliation.tex",nil,"ghostlyelixir_retaliation")
-
--- AddRecipe("achiv_ghostlyelixir_attack", {Ingredient("stinger",1),Ingredient("ghostflower",3)}, RECIPETABS.REFINE, TECH.NONE, nil,nil,nil,nil,"achive_elixirbrewer","images/inventoryimages1.xml",
--- "ghostlyelixir_attack.tex",nil,"ghostlyelixir_attack")
-
--- AddRecipe("achiv_ghostlyelixir_speed", {Ingredient("honey",1),Ingredient("ghostflower",1)}, RECIPETABS.REFINE, TECH.NONE, nil,nil,nil,nil,"achive_elixirbrewer","images/inventoryimages1.xml",
--- "ghostlyelixir_speed.tex",nil,"ghostlyelixir_speed")
-
 AddRecipe("ancient_altar", {Ingredient("thulecite", 15), Ingredient("cutstone", 20), Ingredient("purplegem", 2)}, GLOBAL.RECIPETABS.MAGIC, TECH.NONE, 
 "ancient_altar_placer", --placer
 nil, -- min_spacing
@@ -479,6 +444,13 @@ local function _init_ability_net_var(inst)
     end
 end
 
+local function _init_attribute_net_var(inst)
+    for attribute, _ in pairs(achievement_ability_config.attributes_cost) do
+        local current = "current" .. attribute
+		inst[current] = GLOBAL.net_shortint(inst.GUID, current)
+	end
+end
+
 -- local old_CanEntitySeeInStorm = _G.CanEntitySeeInStorm
 -- print(old_CanEntitySeeInStorm,"===========================")
 -- _G.CanEntitySeeInStorm = function(inst)
@@ -518,8 +490,10 @@ end
 --预运行
 AddPlayerPostInit(function(inst)
     _init_ability_net_var(inst)
+    _init_attribute_net_var(inst)
     inst.currentcoinamount = GLOBAL.net_shortint(inst.GUID,"currentcoinamount")
     inst.currentkillamount = GLOBAL.net_uint(inst.GUID,"currentkillamount")--杀戮值
+    inst.currentattributepointamount =  GLOBAL.net_uint(inst.GUID,"currentattributepointamount")--属性点
     for _,v in pairs(achievement_config.idconfig) do
         if v.id == "a_4" or v.id == "angry" then
             inst[v.check] = GLOBAL.net_shortint(inst.GUID,v.check)
@@ -529,6 +503,7 @@ AddPlayerPostInit(function(inst)
             inst[v.current] = GLOBAL.net_shortint(inst.GUID,v.current)
         end
     end
+
     inst:AddComponent("achievementability")
     --inst.components.achievementmanager.a_a1=false
     inst:AddComponent("achievementmanager")
@@ -812,6 +787,11 @@ AddComponentPostInit("health", function(self)
         if val <= min_health then
             self.currenthealth = min_health
             self.inst:PushEvent("minhealth", { cause = cause, afflicter = afflicter })
+        else
+            self.currenthealth = val
+        end
+    
+        if old_health > min_health and self.currenthealth <= min_health then
             if self.inst.prefab == "daywalker" or self.inst.prefab == "sharkboi" or self.inst.prefab == "daywalker2" then
                 if self.inst.attacker_userid and  self.inst.attacker_userid[1] then
                     local attacker = UserToPlayer(self.inst.attacker_userid[1])
@@ -821,18 +801,15 @@ AddComponentPostInit("health", function(self)
                     attacker.components.achievementmanager:OnKilledCheck(attacker,data)
                 end
             end
+        end 
 
-        else
-            self.currenthealth = val
-        end
-    
         if old_health > 0 and self.currenthealth <= 0 then
             -- NOTES(JBK): Make sure to keep the events fired up to date with the explosive component.
             --Push world event first, because the entity event may invalidate itself
             --i.e. items that use .nofadeout and manually :Remove() on "death" event
             TheWorld:PushEvent("entity_death", { inst = self.inst, cause = cause, afflicter = afflicter })
             self.inst:PushEvent("death", { cause = cause, afflicter = afflicter })
-    
+           
             --Here, check if killing player or monster
             if(self.inst:HasTag("player")) then
                 NotifyPlayerProgress("TotalPlayersKilled", 1, afflicter);

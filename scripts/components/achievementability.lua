@@ -5,6 +5,7 @@ local ability_cost = achievement_ability_config.id2ability
 local ability_ratio = achievement_ability_config.ability_ratio
 local function getcoinamount(self,coinamount) self.inst.currentcoinamount:set(coinamount) end
 local function getkillamount(self,killamount) self.inst.currentkillamount:set(killamount) end
+local function getattributepointamount(self,attributepoint) self.inst.currentattributepointamount:set(attributepoint) end
 
 local function InitPropsTable()
     local props_table = {}
@@ -21,8 +22,23 @@ local function InitPropsTable()
             end
         end
     end
+    for k,v in pairs(achievement_ability_config.attributes_cost) do 
+        props_table[k] = function(self,value) 
+            if value and value ~= 0 then
+                if type(value) == "number" then
+                    self.inst["current" .. k]:set(value) 
+                else 
+                    self.inst["current" .. k]:set(1) 
+                end
+            else
+                self.inst["current" .. k]:set(0) 
+            end
+        end
+    end
+
     props_table["coinamount"] = getcoinamount
     props_table["killamount"] = getkillamount
+    props_table["attributepointamount"] = getattributepointamount
     return props_table
 end
 
@@ -65,11 +81,19 @@ local function InitAllAbility(inst)
     end
 end
 
+local function InitAllAttribute(inst)
+    for attribute,v in pairs(achievement_ability_config.attributes_cost) do
+        inst[attribute] = 0
+    end
+end
+
 local achievementability = Class(function(self, inst)
         self.inst = inst
         InitAllAbility(self)
+        InitAllAttribute(self)
         self.coinamount = 0
         self.killamount = 0
+        self.attributepointamount = 0
         self.a_sleep = true
         self.frozenswitch = true  --冰冻开关
         self.levelswitch = true
@@ -105,6 +129,12 @@ function achievementability:onupdate()
     local inst = self.inst
     --血量上限
     if self.healthmax ~= inst.components.health.maxhealth then
+
+        local health_percent = inst.components.health:GetPercent()
+        inst.components.health:SetMaxHealth(inst.components.health.maxhealth + self.healthup )
+        inst.components.health:SetPercent(health_percent)
+        self.healthmax = inst.components.health.maxhealth
+
         if self.firmarmor == 1  and   inst.components.inventory then  
             local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
             if item ~= nil and item.prefab == "armorruins" then
@@ -164,6 +194,7 @@ function achievementability:OnSave()
     local data = {
         coinamount = self.coinamount,
         killamount = self.killamount,
+        attributepointamount = self.attributepointamount,
         thornsswitch = self.thornsswitch,
         cookmasterswitch = self.cookmasterswitch,
         frozenswitch = self.frozenswitch,
@@ -180,6 +211,11 @@ function achievementability:OnSave()
     for _,v in pairs(achievement_ability_config.ability_cost) do
         data[v.ability] = self[v.ability] 
     end
+
+    for k,v in pairs(achievement_ability_config.attributes_cost) do
+        data[k] = self[k] 
+    end
+
     return data
 end
 
@@ -187,6 +223,7 @@ end
 function achievementability:OnLoad(data)
     self.coinamount = data.coinamount or 0
     self.killamount = data.killamount or 0
+    self.attributepointamount = data.attributepointamount or 0
     self.thornsswitch = data.thornsswitch or true --反伤
     self.effectswitch = data.effectswitch or true
     self.effectstype = data.effectstype or 1
@@ -202,6 +239,10 @@ function achievementability:OnLoad(data)
     for _,v in pairs(achievement_ability_config.ability_cost) do
         self[v.ability] = data[v.ability] or v.default_value
     end
+
+    for k,v in pairs(achievement_ability_config.attributes_cost) do
+        self[k] =  data[k] or 0
+    end
     self:OnLoadedPost()
 end
 
@@ -215,6 +256,66 @@ function achievementability:coinDoDelta(value)
 end
 function achievementability:killDoDelta(value)
     self.killamount = self.killamount + value
+end
+
+function achievementability:attributeDoDelta(value)
+    self.attributepointamount = self.attributepointamount + value
+end
+
+function achievementability:healthupfn(inst,amount)
+    local delta = 1
+    if amount ~= nil then
+        delta = amount
+    end
+    local percent = inst.components.health:GetPercent()
+    inst.components.health:SetMaxHealth(inst.components.health.maxhealth + delta)
+    inst.components.health:SetPercent(percent)
+    self.healthmax = inst.components.health.maxhealth
+end
+
+function achievementability:sanityupfn(inst, amount)
+    local delta = 1
+    if amount ~= nil then
+        delta = amount
+    end
+    local percent = inst.components.sanity:GetPercent()
+    inst.components.sanity:SetMax(inst.components.sanity.max + delta)
+    inst.components.sanity:SetPercent(percent)
+    self.sanitymax = inst.components.sanity.max
+end
+
+function achievementability:hungerupfn(inst, amount)
+    local delta = 1
+    if amount ~= nil then
+        delta = amount
+    end
+    local percent = inst.components.hunger:GetPercent()
+    inst.components.hunger:SetMax(inst.components.hunger.max + delta)
+    inst.components.hunger:SetPercent(percent)
+    self.hungermax = inst.components.hunger.max
+end
+
+function achievementability:resetAttributes(inst)
+    local percent = inst.components.health:GetPercent()
+    inst.components.health:SetMaxHealth(inst.components.health.maxhealth - self.healthup)
+    inst.components.health:SetPercent(percent)
+    self.healthmax = inst.components.health.maxhealth
+
+    local percent = inst.components.sanity:GetPercent()
+    inst.components.sanity:SetMax(inst.components.sanity.max - self.sanityup)
+    inst.components.sanity:SetPercent(percent)
+    self.sanitymax = inst.components.sanity.max
+
+    local percent = inst.components.hunger:GetPercent()
+    inst.components.hunger:SetMax(inst.components.hunger.max - self.hungerup)
+    inst.components.hunger:SetPercent(percent)
+    self.hungermax = inst.components.hunger.max
+    local resetpoint = (self.healthup + self.sanityup + self.hungerup) * TUNING.RETRUN_ATTRIBUTE_POINT
+
+    self.attributepointamount = self.attributepointamount + resetpoint
+    self.healthup = 0
+    self.sanityup = 0
+    self.hungerup = 0
 end
 
 --挨打冰冻怪物  
@@ -2818,6 +2919,27 @@ local function CustomCombatDamage(inst, target, weapon, multiplier, mount)
     return (inst.components.combat.old_customdamagemultfn and inst.components.combat.old_customdamagemultfn(inst, target, weapon, multiplier, mount) or 1) * 0.8333
 end
 
+
+local function OnGetItem(inst, data)
+    local item = data ~= nil and data.item or nil
+
+    if item ~= nil and item:HasTag("pocketwatch") then
+        item.components.inventoryitem.keepondeath = item.prefab ~= "pocketwatch_revive" -- drop the revive watch so she can haunt it
+        item.components.inventoryitem.keepondrown = true
+        item:AddTag("nosteal") -- pocket watches in her inventory are attached to her outfit (see art)
+    end
+end
+
+local function OnLoseItem(inst, data)
+    local item = data ~= nil and (data.prev_item or data.item)
+    if item and item:IsValid() and item:HasTag("pocketwatch") then
+		item.components.inventoryitem.keepondeath = false
+		item.components.inventoryitem.keepondrown = false
+		item:RemoveTag("nosteal")
+    end
+end
+
+
 function achievementability:timemanagerfn(inst)
     if  self.timemanager then
         inst:AddTag("clockmaker")
@@ -2830,6 +2952,7 @@ function achievementability:timemanagerfn(inst)
         inst:ListenForEvent("onwarpback", OnWarpBack)
         inst.components.combat.old_customdamagemultfn = inst.components.combat.customdamagemultfn
         inst:ListenForEvent("equip", function(inst, data)
+            OnGetItem(inst,data)
             if inst.components.inventory then
                 local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
                 if data.eslot == EQUIPSLOTS.HANDS then
@@ -2851,6 +2974,10 @@ function achievementability:timemanagerfn(inst)
                 return result
             end
         end
+        inst:ListenForEvent("itemget", OnGetItem)
+        inst:ListenForEvent("equip", OnGetItem)
+        inst:ListenForEvent("itemlose", OnLoseItem)
+        inst:ListenForEvent("unequip", OnLoseItem)
     -- else
     --     if inst.prefab ~= "wanda" then
     --         inst:RemoveTag("clockmaker")
@@ -2886,6 +3013,16 @@ function achievementability:costKillAmountFinishAchievement(inst,id)
         end
         inst.components.achievementability.coinamount = inst.components.achievementability.coinamount + v.point
         inst.components.achievementability:killDoDelta(-cost_kill_amount)
+    end
+end
+
+function achievementability:attributePointCost(inst, attribute)
+    local cost = achievement_ability_config.attributes_cost[attribute]
+    if inst.components.achievementability.attributepointamount >= cost then
+        inst.components.achievementability[attribute] =  inst.components.achievementability[attribute] + 1
+        inst.components.achievementability:attributeDoDelta(-cost)
+        local fn = attribute .. "fn";
+        inst.components.achievementability[fn](self,inst)
     end
 end
 
@@ -3156,6 +3293,13 @@ function achievementability:OnLoadedPost()
             if self[func] then
                 self[func](self,inst)
             end
+        end
+    end
+
+    for key,v in pairs(achievement_ability_config.attributes_cost) do
+        if self[key] and self[key] > 0  then
+            local func = key .. "fn"
+            self[func](self, inst, self[key])
         end
     end
 end

@@ -30,10 +30,10 @@ local uiachievement = Class(Widget, function(self, owner)
 	self.mainui.bg.allcoin:SetPosition(0, 0, 0)
 	self.mainui.bg.allcoin:Hide()
 
-	--图鉴
-	self.mainui.bg.allchart = self.mainui.bg:AddChild(Widget("allchart"))
-	self.mainui.bg.allchart:SetPosition(0, 0, 0)
-	self.mainui.bg.allchart:Hide()
+	--level
+	self.mainui.bg.alllevel = self.mainui.bg:AddChild(Widget("alllevel"))
+	self.mainui.bg.alllevel:SetPosition(0, 0, 0)
+	self.mainui.bg.alllevel:Hide()
 	--3个分类
 	self.mainui.bg.title_1 = self.mainui.bg:AddChild(ImageButton("images/quagmire_recipebook.xml", "quagmire_recipe_tab_active.tex"))
 	self.mainui.bg.title_1:SetPosition(-365, 420, 0)
@@ -51,7 +51,7 @@ local uiachievement = Class(Widget, function(self, owner)
 			self.mainui.infobutton:Show()
 			self.mainui.itemclassification:Show()
 			self.mainui.bg.allcoin:Hide()
-			self.mainui.bg.allchart:Hide()
+			self.mainui.bg.alllevel:Hide()
 
 			self.mainui.infobutton.last:Show()
 			self.mainui.infobutton.next:Show()
@@ -93,6 +93,7 @@ local uiachievement = Class(Widget, function(self, owner)
 		if not self.mainui.bg.allcoin.shown then
 			if  TUNING.CHECKCOIN then
 				self.mainui.bg.allcoin:Hide()
+				self.mainui.bg.alllevel:Hide()
 			else
 				self.mainui.bg.allcoin:Show()
 			end
@@ -102,7 +103,7 @@ local uiachievement = Class(Widget, function(self, owner)
 			self.mainui.itemclassification:Hide()
 				
 			self.mainui.bg.allachiv:Hide()
-			self.mainui.bg.allchart:Hide()
+			self.mainui.bg.alllevel:Hide()
 			self.mainui.infobutton.last:Hide()
 			self.mainui.infobutton.next:Hide()
 			self.mainui.infobutton.last3:Hide()
@@ -136,14 +137,15 @@ local uiachievement = Class(Widget, function(self, owner)
 	self.mainui.bg.title_3:SetPosition(365, 420, 0)
 	self.mainui.bg.title_3:SetNormalScale(1,1,1)
 	self.mainui.bg.title_3:SetFocusScale(1,1,1)
-	--图鉴BT
+	--等级
 	self.mainui.bg.title_3:SetOnClick(function()
 		self.mainui.bg.title_1:SetTextures("images/quagmire_recipebook.xml", "quagmire_recipe_tab_inactive.tex")
 		self.mainui.bg.title_2:SetTextures("images/quagmire_recipebook.xml", "quagmire_recipe_tab_inactive.tex")
 		self.mainui.bg.title_3:SetTextures("images/quagmire_recipebook.xml", "quagmire_recipe_tab_active.tex")
 
-		if not self.mainui.bg.allchart.shown then
-			self.mainui.bg.allchart:Show()
+		if not self.mainui.bg.alllevel.shown then
+			self.mainui.bg.alllevel:Show()
+			self:levelupdate()
 			self.mainui.bg:Show()
 			self.mainui.infobutton:Show()
 				
@@ -172,10 +174,14 @@ local uiachievement = Class(Widget, function(self, owner)
 
 	--成就点 显示
 	self.mainui.bg.coinamount = self.mainui.bg:AddChild(Text(NEWFONT_OUTLINE, 45,string.format(STRINGS.ACHIEVEMENT_POINT_AMOUNT, self.owner.currentcoinamount:value())))
-	self.mainui.bg.coinamount:SetPosition(-180, 350, 0)
+	self.mainui.bg.coinamount:SetPosition(-280, 350, 0)
 	--杀戮值
 	self.mainui.bg.killamount = self.mainui.bg:AddChild(Text(NEWFONT_OUTLINE, 45, string.format(STRINGS.ACHIEVEMENT_KILL_AMOUNT, self.owner.currentkillamount:value())))
-	self.mainui.bg.killamount:SetPosition(180, 350, 0)
+	self.mainui.bg.killamount:SetPosition(0, 350, 0)
+	--等级
+	self.mainui.bg.levelamount = self.mainui.bg:AddChild(Text(NEWFONT_OUTLINE, 45, string.format(STRINGS.ACHIEVEMENT_LEVEL_AMOUNT, self.owner.currenta_a4amount:value())))
+	self.mainui.bg.levelamount:SetPosition(280, 350, 0)
+
 
 	self.mainbutton = self:AddChild(Widget("mainbutton"))
 	self.mainbutton:SetPosition(-850, 460, 0)
@@ -185,7 +191,6 @@ local uiachievement = Class(Widget, function(self, owner)
     self.mainbutton.checkbuttonglow:SetClickable(false)
     self.mainbutton.checkbuttonglow:Hide()
 
---多少任务
     self.mainbutton.checkbutton = self.mainbutton:AddChild(ImageButton("images/button/checkbutton.xml", "checkbutton.tex"))
     self.mainbutton.checkbutton:MoveToFront()
     self.mainbutton.checkbutton:SetHoverText(STRINGS.ACHIEVEMENT_VIEW)
@@ -227,6 +232,7 @@ local uiachievement = Class(Widget, function(self, owner)
 				self.mainui.infobutton:Show()
 				self.mainui.itemclassification:Show()
 				self.mainui.bg.allcoin:Hide()
+				self.mainui.bg.alllevel:Hide()
 				self.mainui.infobutton.last:Show()
 				self.mainui.infobutton.next:Show()
 				self.mainui.infobutton.last2:Hide()
@@ -269,7 +275,6 @@ local uiachievement = Class(Widget, function(self, owner)
     self.mainbutton.coinbuttonglow:Hide()
     self.mainbutton.coinbuttonglow:SetPosition(55, -2, 0)
     self.mainbutton.coinbuttonglow:SetScale(1,1,1)
---多少 点
     self.mainbutton.coinbutton = self.mainbutton:AddChild(ImageButton("images/button/coinbutton.xml", "coinbutton.tex"))
     self.mainbutton.coinbutton:MoveToFront()
     self.mainbutton.coinbutton:SetPosition(55, -2, 0)
@@ -327,6 +332,7 @@ local uiachievement = Class(Widget, function(self, owner)
 				self.mainui.itemclassification:Hide()
 				
 				self.mainui.bg.allachiv:Hide()
+				self.mainui.bg.alllevel:Hide()
 				self.mainui.infobutton.last:Hide()
 				self.mainui.infobutton.next:Hide()
 
@@ -485,7 +491,7 @@ local uiachievement = Class(Widget, function(self, owner)
 		self.mainui.infobutton:Hide()
 		self.mainui.itemclassification:Hide()
 		self.mainui.bg.allachiv:Hide()
-
+		self.mainui.bg.alllevel:Hide()
 		--self.mainbutton.configact:Hide()
 		self.mainbutton.configbg:Hide()
 		self.mainbutton.configbigger:Hide()
@@ -620,309 +626,56 @@ local uiachievement = Class(Widget, function(self, owner)
 	self.mainui.itemclassification:SetPosition(-210, -30, 0)
 	self.mainui.itemclassification:Hide()
 
-	self.mainui.itemclassification.head = self.mainui.itemclassification:AddChild(ImageButton("images/button/item_head_dact.xml", "item_head_dact.tex"))
-	self.mainui.itemclassification.head:SetPosition(-220, -370, 0)
-	self.mainui.itemclassification.head:SetOnGainFocus(function() self.mainui.itemclassification.head.item:SetSize(34) end)
-	self.mainui.itemclassification.head:SetOnLoseFocus(function() self.mainui.itemclassification.head.item:SetSize(30) end)
-	self.mainui.itemclassification.head.item = self.mainui.itemclassification.head:AddChild(Text(NEWFONT, 30, STRINGS.ALLACHIVITEM[1],{0,0,0,1}))
-	self.mainui.itemclassification.head.item:SetHAlign(ANCHOR_MIDDLE)
-	self.mainui.itemclassification.head.item:SetRegionSize(60,30)
-
-	self.mainui.itemclassification.head:SetOnClick(function()
-		self.numpage = 1
-		self.item = 1
-		self:build()
-		self.mainui.infobutton.last:SetTextures("images/button/last_dact.xml", "last_dact.tex")
-		self.maxnumpage =  math.ceil(#self.listitem/14)
-		if self.numpage == self.maxnumpage then
-			self.mainui.infobutton.next:SetTextures("images/button/next_dact.xml", "next_dact.tex")
+	local first = 1 
+	local last = 10
+	for i = first, last do
+		if i == first then
+			self.mainui.itemclassification[i] = self.mainui.itemclassification:AddChild(ImageButton("images/button/item_head_act.xml", "item_head_act.tex"))
+		elseif i == last then
+			self.mainui.itemclassification[i] = self.mainui.itemclassification:AddChild(ImageButton("images/button/item_tail_act.xml", "item_tail_act.tex"))
 		else
-			self.mainui.infobutton.next:SetTextures("images/button/next_act.xml", "next_act.tex")
+			self.mainui.itemclassification[i] = self.mainui.itemclassification:AddChild(ImageButton("images/button/item_mide_act.xml", "item_mide_act.tex"))
 		end
-		self.mainui.itemclassification.head:SetTextures("images/button/item_head_dact.xml", "item_head_dact.tex")
-		self.mainui.itemclassification.mid2:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid3:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid4:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid5:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid6:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid7:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid8:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid9:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.tail:SetTextures("images/button/item_tail_act.xml", "item_tail_act.tex")
-	end)
+		self.mainui.itemclassification[i].item = self.mainui.itemclassification[i]:AddChild(Text(NEWFONT, 30, STRINGS.ALLACHIVITEM[i],{0,0,0,1}))
+		self.mainui.itemclassification[i].item:SetHAlign(ANCHOR_MIDDLE)
+		self.mainui.itemclassification[i].item:SetRegionSize(60,30)
+		self.mainui.itemclassification[i]:SetOnGainFocus(function() self.mainui.itemclassification[i].item:SetSize(34) end)
+		self.mainui.itemclassification[i]:SetOnLoseFocus(function() self.mainui.itemclassification[i].item:SetSize(30) end)
+		self.mainui.itemclassification[i]:SetPosition(-220 + (i - 1) * 60, -370, 0)
+		self.mainui.itemclassification[i]:SetOnClick(function()
+			self.numpage = 1
+			self.item = i
+			self:build()
+			self.mainui.infobutton.last:SetTextures("images/button/last_dact.xml", "last_dact.tex")
+			self.maxnumpage =  math.ceil(#self.listitem/14)
+			if self.numpage == self.maxnumpage then
+				self.mainui.infobutton.next:SetTextures("images/button/next_dact.xml", "next_dact.tex")
+			else
+				self.mainui.infobutton.next:SetTextures("images/button/next_act.xml", "next_act.tex")
+			end
+			
+			for j = first, last do
+				if i == j then
+					if j == first then
+						self.mainui.itemclassification[j]:SetTextures("images/button/item_head_dact.xml", "item_head_dact.tex")
+					elseif j == last then
+						self.mainui.itemclassification[j]:SetTextures("images/button/item_tail_dact.xml", "item_tail_dact.tex")
+					else
+						self.mainui.itemclassification[j]:SetTextures("images/button/item_mide_dact.xml", "item_mide_dact.tex")
+					end
+				else
+					if j == first then
+						self.mainui.itemclassification[j]:SetTextures("images/button/item_head_act.xml", "item_head_act.tex")
+					elseif j == last then
+						self.mainui.itemclassification[j]:SetTextures("images/button/item_tail_act.xml", "item_tail_act.tex")
+					else
+						self.mainui.itemclassification[j]:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
+					end
+				end
+			end
+		end)
+	end
 
-	self.mainui.itemclassification.mid2 = self.mainui.itemclassification:AddChild(ImageButton("images/button/item_mide_act.xml", "item_mide_act.tex"))
-	self.mainui.itemclassification.mid2:SetPosition(-160, -370, 0)
-	self.mainui.itemclassification.mid2:SetOnGainFocus(function() self.mainui.itemclassification.mid2.item:SetSize(34) end)
-	self.mainui.itemclassification.mid2:SetOnLoseFocus(function() self.mainui.itemclassification.mid2.item:SetSize(30) end)
-	self.mainui.itemclassification.mid2.item = self.mainui.itemclassification.mid2:AddChild(Text(NEWFONT, 30, STRINGS.ALLACHIVITEM[2],{0,0,0,1}))
-	self.mainui.itemclassification.mid2.item:SetHAlign(ANCHOR_MIDDLE)
-	self.mainui.itemclassification.mid2.item:SetRegionSize(60,30)
-	self.mainui.itemclassification.mid2:SetOnClick(function()
-		self.numpage = 1
-		self.item = 2
-		self:build()
-		self.mainui.infobutton.last:SetTextures("images/button/last_dact.xml", "last_dact.tex")
-		self.maxnumpage =  math.ceil(#self.listitem/14)
-		if self.numpage == self.maxnumpage then
-			self.mainui.infobutton.next:SetTextures("images/button/next_dact.xml", "next_dact.tex")
-		else
-			self.mainui.infobutton.next:SetTextures("images/button/next_act.xml", "next_act.tex")
-		end
-		self.mainui.itemclassification.head:SetTextures("images/button/item_head_act.xml", "item_head_act.tex")
-		self.mainui.itemclassification.mid2:SetTextures("images/button/item_mide_dact.xml", "item_mide_dact.tex")
-		self.mainui.itemclassification.mid3:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid4:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid5:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid6:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid7:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid8:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid9:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.tail:SetTextures("images/button/item_tail_act.xml", "item_tail_act.tex")
-	end)
-
-	self.mainui.itemclassification.mid3 = self.mainui.itemclassification:AddChild(ImageButton("images/button/item_mide_act.xml", "item_mide_act.tex"))
-	self.mainui.itemclassification.mid3:SetPosition(-100, -370, 0)
-	self.mainui.itemclassification.mid3:SetOnGainFocus(function() self.mainui.itemclassification.mid3.item:SetSize(34) end)
-	self.mainui.itemclassification.mid3:SetOnLoseFocus(function() self.mainui.itemclassification.mid3.item:SetSize(30) end)
-	self.mainui.itemclassification.mid3.item = self.mainui.itemclassification.mid3:AddChild(Text(NEWFONT, 30, STRINGS.ALLACHIVITEM[3],{0,0,0,1}))
-	self.mainui.itemclassification.mid3.item:SetHAlign(ANCHOR_MIDDLE)
-	self.mainui.itemclassification.mid3.item:SetRegionSize(60,30)
-	self.mainui.itemclassification.mid3:SetOnClick(function()
-		self.numpage = 1
-		self.item = 3
-		self:build()
-		self.mainui.infobutton.last:SetTextures("images/button/last_dact.xml", "last_dact.tex")
-		self.maxnumpage =  math.ceil(#self.listitem/14)
-		if self.numpage == self.maxnumpage then
-			self.mainui.infobutton.next:SetTextures("images/button/next_dact.xml", "next_dact.tex")
-		else
-			self.mainui.infobutton.next:SetTextures("images/button/next_act.xml", "next_act.tex")
-		end
-		self.mainui.itemclassification.head:SetTextures("images/button/item_head_act.xml", "item_head_act.tex")
-		self.mainui.itemclassification.mid2:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid3:SetTextures("images/button/item_mide_dact.xml", "item_mide_dact.tex")
-		self.mainui.itemclassification.mid4:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid5:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid6:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid7:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid8:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid9:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.tail:SetTextures("images/button/item_tail_act.xml", "item_tail_act.tex")
-	end)
-
-	self.mainui.itemclassification.mid4 = self.mainui.itemclassification:AddChild(ImageButton("images/button/item_mide_act.xml", "item_mide_act.tex"))
-	self.mainui.itemclassification.mid4:SetPosition(-40, -370, 0)
-	self.mainui.itemclassification.mid4:SetOnGainFocus(function() self.mainui.itemclassification.mid4.item:SetSize(34) end)
-	self.mainui.itemclassification.mid4:SetOnLoseFocus(function() self.mainui.itemclassification.mid4.item:SetSize(30) end)
-	self.mainui.itemclassification.mid4.item = self.mainui.itemclassification.mid4:AddChild(Text(NEWFONT, 30, STRINGS.ALLACHIVITEM[4],{0,0,0,1}))
-	self.mainui.itemclassification.mid4.item:SetHAlign(ANCHOR_MIDDLE)
-	self.mainui.itemclassification.mid4.item:SetRegionSize(60,30)
-	self.mainui.itemclassification.mid4:SetOnClick(function()
-		self.numpage = 1
-		self.item = 4
-		self:build()
-		self.mainui.infobutton.last:SetTextures("images/button/last_dact.xml", "last_dact.tex")
-		self.maxnumpage =  math.ceil(#self.listitem/14)
-		if self.numpage == self.maxnumpage then
-			self.mainui.infobutton.next:SetTextures("images/button/next_dact.xml", "next_dact.tex")
-		else
-			self.mainui.infobutton.next:SetTextures("images/button/next_act.xml", "next_act.tex")
-		end
-		self.mainui.itemclassification.head:SetTextures("images/button/item_head_act.xml", "item_head_act.tex")
-		self.mainui.itemclassification.mid2:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid3:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid4:SetTextures("images/button/item_mide_dact.xml", "item_mide_dact.tex")
-		self.mainui.itemclassification.mid5:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid6:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid7:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid8:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid9:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.tail:SetTextures("images/button/item_tail_act.xml", "item_tail_act.tex")
-	end)
-
-	self.mainui.itemclassification.mid5 = self.mainui.itemclassification:AddChild(ImageButton("images/button/item_mide_act.xml", "item_mide_act.tex"))
-	self.mainui.itemclassification.mid5:SetPosition(20, -370, 0)
-	self.mainui.itemclassification.mid5:SetOnGainFocus(function() self.mainui.itemclassification.mid5.item:SetSize(34) end)
-	self.mainui.itemclassification.mid5:SetOnLoseFocus(function() self.mainui.itemclassification.mid5.item:SetSize(30) end)
-	self.mainui.itemclassification.mid5.item = self.mainui.itemclassification.mid5:AddChild(Text(NEWFONT, 30, STRINGS.ALLACHIVITEM[5],{0,0,0,1}))
-	self.mainui.itemclassification.mid5.item:SetHAlign(ANCHOR_MIDDLE)
-	self.mainui.itemclassification.mid5.item:SetRegionSize(60,30)
-	self.mainui.itemclassification.mid5:SetOnClick(function()
-		self.numpage = 1
-		self.item = 5
-		self:build()
-		self.mainui.infobutton.last:SetTextures("images/button/last_dact.xml", "last_dact.tex")
-		self.maxnumpage =  math.ceil(#self.listitem/14)
-		if self.numpage == self.maxnumpage then
-			self.mainui.infobutton.next:SetTextures("images/button/next_dact.xml", "next_dact.tex")
-		else
-			self.mainui.infobutton.next:SetTextures("images/button/next_act.xml", "next_act.tex")
-		end
-		self.mainui.itemclassification.head:SetTextures("images/button/item_head_act.xml", "item_head_act.tex")
-		self.mainui.itemclassification.mid2:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid3:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid4:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid5:SetTextures("images/button/item_mide_dact.xml", "item_mide_dact.tex")
-		self.mainui.itemclassification.mid6:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid7:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid8:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid9:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.tail:SetTextures("images/button/item_tail_act.xml", "item_tail_act.tex")
-		
-	end)
-
-	self.mainui.itemclassification.mid6 = self.mainui.itemclassification:AddChild(ImageButton("images/button/item_mide_act.xml", "item_mide_act.tex"))
-	self.mainui.itemclassification.mid6:SetPosition(80, -370, 0)
-	self.mainui.itemclassification.mid6:SetOnGainFocus(function() self.mainui.itemclassification.mid6.item:SetSize(34) end)
-	self.mainui.itemclassification.mid6:SetOnLoseFocus(function() self.mainui.itemclassification.mid6.item:SetSize(30) end)
-	self.mainui.itemclassification.mid6.item = self.mainui.itemclassification.mid6:AddChild(Text(NEWFONT, 30, STRINGS.ALLACHIVITEM[6],{0,0,0,1}))
-	self.mainui.itemclassification.mid6.item:SetHAlign(ANCHOR_MIDDLE)
-	self.mainui.itemclassification.mid6.item:SetRegionSize(60,30)
-	self.mainui.itemclassification.mid6:SetOnClick(function()
-		self.numpage = 1
-		self.item = 6
-		self:build()
-		self.mainui.infobutton.last:SetTextures("images/button/last_dact.xml", "last_dact.tex")
-		self.maxnumpage =  math.ceil(#self.listitem/14)
-		if self.numpage == self.maxnumpage then
-			self.mainui.infobutton.next:SetTextures("images/button/next_dact.xml", "next_dact.tex")
-		else
-			self.mainui.infobutton.next:SetTextures("images/button/next_act.xml", "next_act.tex")
-		end
-		self.mainui.itemclassification.head:SetTextures("images/button/item_head_act.xml", "item_head_act.tex")
-		self.mainui.itemclassification.mid2:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid3:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid4:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid5:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid6:SetTextures("images/button/item_mide_dact.xml", "item_mide_dact.tex")
-		self.mainui.itemclassification.mid7:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid8:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid9:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.tail:SetTextures("images/button/item_tail_act.xml", "item_tail_act.tex")
-	end)
-
-	self.mainui.itemclassification.mid7 = self.mainui.itemclassification:AddChild(ImageButton("images/button/item_mide_act.xml", "item_mide_act.tex"))
-	self.mainui.itemclassification.mid7:SetPosition(140, -370, 0)
-	self.mainui.itemclassification.mid7:SetOnGainFocus(function() self.mainui.itemclassification.mid7.item:SetSize(34) end)
-	self.mainui.itemclassification.mid7:SetOnLoseFocus(function() self.mainui.itemclassification.mid7.item:SetSize(30) end)
-	self.mainui.itemclassification.mid7.item = self.mainui.itemclassification.mid7:AddChild(Text(NEWFONT, 30, STRINGS.ALLACHIVITEM[7],{0,0,0,1}))
-	self.mainui.itemclassification.mid7.item:SetHAlign(ANCHOR_MIDDLE)
-	self.mainui.itemclassification.mid7.item:SetRegionSize(60,30)
-	self.mainui.itemclassification.mid7:SetOnClick(function()
-		self.numpage = 1
-		self.item = 7
-		self:build()
-		self.mainui.infobutton.last:SetTextures("images/button/last_dact.xml", "last_dact.tex")
-		self.maxnumpage =  math.ceil(#self.listitem/14)
-		if self.numpage == self.maxnumpage then
-			self.mainui.infobutton.next:SetTextures("images/button/next_dact.xml", "next_dact.tex")
-		else
-			self.mainui.infobutton.next:SetTextures("images/button/next_act.xml", "next_act.tex")
-		end
-		self.mainui.itemclassification.head:SetTextures("images/button/item_head_act.xml", "item_head_act.tex")
-		self.mainui.itemclassification.mid2:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid3:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid4:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid5:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid6:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid7:SetTextures("images/button/item_mide_dact.xml", "item_mide_dact.tex")
-		self.mainui.itemclassification.mid8:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid9:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.tail:SetTextures("images/button/item_tail_act.xml", "item_tail_act.tex")
-
-	end)
-
-	self.mainui.itemclassification.mid8 = self.mainui.itemclassification:AddChild(ImageButton("images/button/item_mide_act.xml", "item_mide_act.tex"))
-	self.mainui.itemclassification.mid8:SetPosition(200, -370, 0)
-	self.mainui.itemclassification.mid8:SetOnGainFocus(function() self.mainui.itemclassification.mid8.item:SetSize(34) end)
-	self.mainui.itemclassification.mid8:SetOnLoseFocus(function() self.mainui.itemclassification.mid8.item:SetSize(30) end)
-	self.mainui.itemclassification.mid8.item = self.mainui.itemclassification.mid8:AddChild(Text(NEWFONT, 30, STRINGS.ALLACHIVITEM[8],{0,0,0,1}))
-	self.mainui.itemclassification.mid8.item:SetHAlign(ANCHOR_MIDDLE)
-	self.mainui.itemclassification.mid8.item:SetRegionSize(60,30)
-	self.mainui.itemclassification.mid8:SetOnClick(function()
-		self.numpage = 1
-		self.item = 8
-		self:build()
-		self.mainui.infobutton.last:SetTextures("images/button/last_dact.xml", "last_dact.tex")
-		self.maxnumpage =  math.ceil(#self.listitem/14)
-		if self.numpage == self.maxnumpage then
-			self.mainui.infobutton.next:SetTextures("images/button/next_dact.xml", "next_dact.tex")
-		else
-			self.mainui.infobutton.next:SetTextures("images/button/next_act.xml", "next_act.tex")
-		end
-		self.mainui.itemclassification.head:SetTextures("images/button/item_head_act.xml", "item_head_act.tex")
-		self.mainui.itemclassification.mid2:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid3:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid4:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid5:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid6:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid7:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid8:SetTextures("images/button/item_mide_dact.xml", "item_mide_dact.tex")
-		self.mainui.itemclassification.mid9:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.tail:SetTextures("images/button/item_tail_act.xml", "item_tail_act.tex")
-	end)
-
-	self.mainui.itemclassification.mid9 = self.mainui.itemclassification:AddChild(ImageButton("images/button/item_mide_act.xml", "item_mide_act.tex"))
-	self.mainui.itemclassification.mid9:SetPosition(260, -370, 0)
-	self.mainui.itemclassification.mid9:SetOnGainFocus(function() self.mainui.itemclassification.mid9.item:SetSize(34) end)
-	self.mainui.itemclassification.mid9:SetOnLoseFocus(function() self.mainui.itemclassification.mid9.item:SetSize(30) end)
-	self.mainui.itemclassification.mid9.item = self.mainui.itemclassification.mid9:AddChild(Text(NEWFONT, 30, STRINGS.ALLACHIVITEM[10],{0,0,0,1}))
-	self.mainui.itemclassification.mid9.item:SetHAlign(ANCHOR_MIDDLE)
-	self.mainui.itemclassification.mid9.item:SetRegionSize(60,30)
-	self.mainui.itemclassification.mid9:SetOnClick(function()
-		self.numpage = 1
-		self.item = 10
-		self:build()
-		self.mainui.infobutton.last:SetTextures("images/button/last_dact.xml", "last_dact.tex")
-		self.maxnumpage =  math.ceil(#self.listitem/14)
-		if self.numpage == self.maxnumpage then
-			self.mainui.infobutton.next:SetTextures("images/button/next_dact.xml", "next_dact.tex")
-		else
-			self.mainui.infobutton.next:SetTextures("images/button/next_act.xml", "next_act.tex")
-		end
-		self.mainui.itemclassification.head:SetTextures("images/button/item_head_act.xml", "item_head_act.tex")
-		self.mainui.itemclassification.mid2:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid3:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid4:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid5:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid6:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid7:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid8:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid9:SetTextures("images/button/item_mide_dact.xml", "item_mide_dact.tex")
-		self.mainui.itemclassification.tail:SetTextures("images/button/item_tail_act.xml", "item_tail_act.tex")
-		
-	end)
-
-	self.mainui.itemclassification.tail = self.mainui.itemclassification:AddChild(ImageButton("images/button/item_tail_act.xml", "item_tail_act.tex"))
-	self.mainui.itemclassification.tail:SetPosition(320, -370, 0)
-	self.mainui.itemclassification.tail:SetOnGainFocus(function() self.mainui.itemclassification.tail.item:SetSize(34) end)
-	self.mainui.itemclassification.tail:SetOnLoseFocus(function() self.mainui.itemclassification.tail.item:SetSize(30) end)
-	self.mainui.itemclassification.tail.item = self.mainui.itemclassification.tail:AddChild(Text(NEWFONT, 30, STRINGS.ALLACHIVITEM[9],{0,0,0,1}))
-	self.mainui.itemclassification.tail.item:SetHAlign(ANCHOR_MIDDLE)
-	self.mainui.itemclassification.tail.item:SetRegionSize(60,30)
-	self.mainui.itemclassification.tail:SetOnClick(function()
-		self.numpage = 1
-		self.item = 9
-		self:build()
-		self.mainui.infobutton.last:SetTextures("images/button/last_dact.xml", "last_dact.tex")
-		self.maxnumpage =  math.ceil(#self.listitem/14)
-		if self.numpage == self.maxnumpage then
-			self.mainui.infobutton.next:SetTextures("images/button/next_dact.xml", "next_dact.tex")
-		else
-			self.mainui.infobutton.next:SetTextures("images/button/next_act.xml", "next_act.tex")
-		end
-		self.mainui.itemclassification.head:SetTextures("images/button/item_head_act.xml", "item_head_act.tex")
-		self.mainui.itemclassification.mid2:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid3:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid4:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid5:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid6:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid7:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid8:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.mid9:SetTextures("images/button/item_mide_act.xml", "item_mide_act.tex")
-		self.mainui.itemclassification.tail:SetTextures("images/button/item_tail_dact.xml", "item_tail_dact.tex")
-	end)
 	self.inst:DoTaskInTime(.2, function()
 		self.numpage = 1
 		self.numpage2 = 1
@@ -944,13 +697,15 @@ local uiachievement = Class(Widget, function(self, owner)
 
 		self:build()
 		self:coinbuild()
+		self:levelbuild()
 		self:StartUpdating()
 	end)
 end)
 
 function uiachievement:OnUpdate(dt)
-	self.mainui.bg.coinamount:SetString(string.format(STRINGS.ACHIEVEMENT_POINT_AMOUNT,self.owner.currentcoinamount:value()))
-	self.mainui.bg.killamount:SetString(string.format(STRINGS.ACHIEVEMENT_KILL_AMOUNT,self.owner.currentkillamount:value()))
+	self.mainui.bg.coinamount:SetString(string.format(STRINGS.ACHIEVEMENT_POINT_AMOUNT, self.owner.currentcoinamount:value()))
+	self.mainui.bg.killamount:SetString(string.format(STRINGS.ACHIEVEMENT_KILL_AMOUNT, self.owner.currentkillamount:value()))
+	self.mainui.bg.levelamount:SetString(string.format(STRINGS.ACHIEVEMENT_LEVEL_AMOUNT, self.owner.currenta_a4amount:value()))
 	self:loadlist()
 	self.listitem = {}
 	for a = 1, #self.achivlist do
@@ -993,6 +748,7 @@ function uiachievement:OnUpdate(dt)
     		self.mainui.bg.allachiv.achivlisttiledone[i]:SetHoverText(STRINGS.ACHIEVEMENT_ACHIEVEMENT_FINISHED..self.achivlist[#self.achivlist].current.."/"..(#self.achivlist-1))
     	end
 	end
+	self:levelupdate()
 end
 
 function uiachievement:build()
@@ -1089,6 +845,101 @@ function uiachievement:build()
 			self.mainui.bg.allachiv.achivlisttiledone[i]:Hide()
 		end
 	end
+end
+
+function uiachievement:levelbuild()
+	self.mainui.bg.alllevel = self.mainui.bg:AddChild(Widget("alllevel"))
+	self.mainui.bg.alllevel.levelxp = self.mainui.bg.alllevel:AddChild(Text(NEWFONT_OUTLINE, 45))
+	self.mainui.bg.alllevel.levelxp:SetPosition(10, 280, 0)
+	self.mainui.bg.alllevel.levelxp:SetHAlign(ANCHOR_MIDDLE)
+	self.mainui.bg.alllevel.levelxp:SetString(STRINGS.EXP .. self.owner.currenta_a2amount:value().."/".. self.owner.currenta_a3amount:value())
+
+	self.mainui.bg.alllevel.remainpoints = self.mainui.bg.alllevel:AddChild(Text(NEWFONT_OUTLINE, 45))
+	self.mainui.bg.alllevel.remainpoints:SetPosition(10, 200, 0)
+	self.mainui.bg.alllevel.remainpoints:SetHAlign(ANCHOR_MIDDLE)
+	self.mainui.bg.alllevel.remainpoints:SetString(string.format(STRINGS.REMAIN_POINT,  self.owner.currentattributepointamount:value()))
+	self:initattribute("hunger", -55, 140, "+1")
+	self:initattribute("sanity", -55, 100, "+1")
+	self:initattribute("health", -55, 60, "+1")
+
+	self.mainui.bg.alllevel.resetyes = self.mainui.bg.alllevel:AddChild(ImageButton("images/button/remove_yes.xml", "remove_yes.tex"))
+	self.mainui.bg.alllevel.resetyes:SetPosition(-60, -10, 0)
+	self.mainui.bg.alllevel.resetyes:Hide()
+	self.mainui.bg.alllevel.resetyes:SetNormalScale(1,1,1)
+	self.mainui.bg.alllevel.resetyes:SetFocusScale(1.1,1.1,1)
+	self.mainui.bg.alllevel.resetyes:SetOnClick(function()
+		SendModRPCToServer(MOD_RPC["DSTAchievement"]["reset_attributes"])
+		self.mainui.bg.alllevel.resetyes:Hide()
+		self.mainui.bg.alllevel.resetno:Hide()
+		self.mainui.bg.alllevel.reset.warning:Hide()
+	end)
+
+	self.mainui.bg.alllevel.resetno = self.mainui.bg.alllevel:AddChild(ImageButton("images/button/remove_no.xml", "remove_no.tex"))
+	self.mainui.bg.alllevel.resetno:SetPosition(20, -10, 0)
+	self.mainui.bg.alllevel.resetno:Hide()
+	self.mainui.bg.alllevel.resetno:SetNormalScale(1,1,1)
+	self.mainui.bg.alllevel.resetno:SetFocusScale(1.1,1.1,1)
+	self.mainui.bg.alllevel.resetno:SetOnClick(function()
+		self.mainui.bg.alllevel.resetno:Hide()
+		self.mainui.bg.alllevel.resetyes:Hide()
+		self.mainui.bg.alllevel.reset.warning:Hide()
+	end)
+
+	self.mainui.bg.alllevel.reset = self.mainui.bg.alllevel:AddChild(ImageButton("images/button/config_remove.xml", "config_remove.tex"))
+	self.mainui.bg.alllevel.reset.desc = self.mainui.bg.alllevel.reset:AddChild(Text(NEWFONT_OUTLINE, 30, STRINGS.RESET_ATTRIBUTE, {1,0,0,1} ))
+	self.mainui.bg.alllevel.reset.warning = self.mainui.bg.alllevel.reset:AddChild(Text(NEWFONT_OUTLINE, 30,string.format(STRINGS.RESET_ATTRIBUTE_WARING,TUNING.RETRUN_ATTRIBUTE_POINT * 100), {0.6,0,0,1} ))
+	self.mainui.bg.alllevel.reset.warning:SetPosition(-100,-60,0)
+	self.mainui.bg.alllevel.reset.warning:Hide()
+	self.mainui.bg.alllevel.reset.desc:SetPosition(0,-30,0)
+	self.mainui.bg.alllevel.reset:SetPosition(100, 0, 0)
+	self.mainui.bg.alllevel.reset:SetScale(1,1,1)
+	self.mainui.bg.alllevel.reset:SetOnClick(function()
+		self.mainui.bg.alllevel.resetyes:Show()
+		self.mainui.bg.alllevel.resetno:Show()
+		self.mainui.bg.alllevel.reset.warning:Show()
+	end)
+end
+
+function uiachievement:levelupdate()
+	self.mainui.bg.alllevel.levelxp:SetString(STRINGS.EXP .. self.owner.currenta_a2amount:value().."/".. self.owner.currenta_a3amount:value())
+	self.mainui.bg.alllevel.remainpoints:SetString(string.format(STRINGS.REMAIN_POINT,  self.owner.currentattributepointamount:value()))
+	self:updateattribute("hunger")
+	self:updateattribute("sanity")
+	self:updateattribute("health")
+end
+
+function uiachievement:updateattribute(name)
+	self.mainui.bg.alllevel.attributelabels[name]:SetString(string.format("%s:  %d", STRINGS.ATTRIBUTES[name],self.owner["current" .. name .."up"]:value()) )
+	if  self.owner.currentattributepointamount:value() <= 0 then
+		self.mainui.bg.alllevel.levelupbuttons[name]:ClearFocus()
+		self.mainui.bg.alllevel.levelupbuttons[name]:Disable()
+	else
+		self.mainui.bg.alllevel.levelupbuttons[name]:Enable()
+	end
+	
+end
+
+function uiachievement:initattribute(name, posx, posy, desc)
+
+	if self.mainui.bg.alllevel.attributelabels == nil then
+		self.mainui.bg.alllevel.attributelabels = {}
+	end
+	if self.mainui.bg.alllevel.levelupbuttons == nil then
+		self.mainui.bg.alllevel.levelupbuttons = {}
+	end
+
+	self.mainui.bg.alllevel.attributelabels[name] = self.mainui.bg.alllevel:AddChild(Text(NEWFONT_OUTLINE, 45))
+	self.mainui.bg.alllevel.attributelabels[name]:SetPosition(posx, posy, 0)
+	self.mainui.bg.alllevel.attributelabels[name]:SetHAlign(ANCHOR_MIDDLE)
+	self.mainui.bg.alllevel.levelupbuttons[name] = self.mainui.bg.alllevel:AddChild(ImageButton("images/button/button_normal.xml", "button_normal.tex"))
+	self.mainui.bg.alllevel.levelupbuttons[name]:SetImageDisabledColour(0.75,0.75,0.75,0.9)
+	self.mainui.bg.alllevel.levelupbuttons[name]:SetPosition(posx + 140, posy, 0)
+	self.mainui.bg.alllevel.levelupbuttons[name].label = self.mainui.bg.alllevel.levelupbuttons[name]:AddChild(Text(NEWFONT_OUTLINE, 45, desc))
+	self.mainui.bg.alllevel.levelupbuttons[name].label:SetHAlign(ANCHOR_MIDDLE)
+	self:updateattribute(name)
+	self.mainui.bg.alllevel.levelupbuttons[name]:SetOnClick(function()
+		SendModRPCToServer(MOD_RPC["DSTAchievement"][name .. "up"])
+	end)
 end
 
 function uiachievement:coinbuild()

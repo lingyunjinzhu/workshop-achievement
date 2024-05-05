@@ -1,4 +1,5 @@
 local achievement_config = require("Achievement.achievement_config")
+local achievement_ability_config = require("Achievement.achievement_ability_config")
 --modname的名字不能有中文！！！
 
 AddModRPCHandler("DSTAchievement", "jump", function(player)
@@ -194,9 +195,22 @@ end)
 AddModRPCHandler("DSTAchievement", "timemanager", function(player)
 	player.components.achievementability:timemanagercoin(player)
 end)
+
 AddModRPCHandler("DSTAchievement", "finishachievement", function(player,id)
 	player.components.achievementability:costKillAmountFinishAchievement(player,id)
 end)
+
+for k, v in pairs(achievement_ability_config.attributes_cost) do
+	AddModRPCHandler("DSTAchievement", k, function(player)
+		player.components.achievementability:attributePointCost(player, k)
+	end)
+end
+
+AddModRPCHandler("DSTAchievement", "reset_attributes", function(player)
+	player.components.achievementability:resetAttributes(player)
+end)
+
+
 -- for _,v in pairs(achievement_config.config) do
 -- 	if v.catagory == 6 or v.catagory == 7 then
 -- 		AddModRPCHandler("DSTAchievement", v.id, function(player)
