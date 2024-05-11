@@ -265,6 +265,9 @@ STRINGS.ACHIVABILITYNAME={
     ["ignorestorm"] = "Ignorestorm",
     ["moonstone"] = "MoonBlessing",
     ["timemanager"] = "TimeManager",
+    ["alchemytechnology"] = "Alchemytechnology",
+    ["lunaraligned"] = "LunarAligned",
+    ["shadowaligned"] = "ShadowAligned",
 }
 STRINGS.ACHIVABILITYDSPC={
     ["thornss"] ="Be beaten and wounded the enemy",
@@ -281,6 +284,7 @@ STRINGS.ACHIVABILITYDSPC={
     ["goodman"] ="The leader of a pig bunny spider dog wearing a bee crown",
     ["fishmaster"] ="Fish immediately hooks when fishing",
     ["chopmaster"] ="Cut down trees in one click",
+    ["goldminer"] = "Dig the ore pile in one go",
     ["cookmaster"] ="Quick cooking and chef ability acquisition",
     ["pickmaster"] ="Dual product at collection time",
     ["nomoist"] ="Won't be wet",
@@ -311,6 +315,9 @@ STRINGS.ACHIVABILITYDSPC={
     ["ignorestorm"] = "Walk in the desert without fear of wind and sand in summer",
     ["moonstone"] = "make moonstone",
     ["timemanager"] = "time manager! wanda ability",
+    ["alchemytechnology"] = "Wilson's synthesis ability",
+    ["lunaraligned"] = "Defense against the moon camp +20%, damage against the shadow camp +%20",
+    ["shadowaligned"] = "Defense against shadow camp +20%, damage against moon camp +%20",
 }
 STRINGS.ACHIEVEMENT_LIST =
 {

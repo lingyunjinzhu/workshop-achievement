@@ -172,9 +172,9 @@ end
 -- RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivbookbuilder", 
 -- "images/inventoryimages.xml", "book_birds.tex",nil,"book_birds")
 
--- AddRecipe("achivbook_gardening", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("seeds", 1), GLOBAL.Ingredient("poop", 1)},
--- RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivbookbuilder", 
--- "images/inventoryimages.xml", "book_gardening.tex" ,nil,"book_gardening")
+AddRecipe("achivbook_gardening", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("seeds", 1), GLOBAL.Ingredient("poop", 1)},
+RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivbookbuilder", 
+"images/inventoryimages.xml", "book_gardening.tex" ,nil,"book_gardening")
 
 -- AddRecipe("achivbook_sleep", {GLOBAL.Ingredient("papyrus", 2), GLOBAL.Ingredient("nightmarefuel", 2)}, 
 -- RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "achivbookbuilder", 
@@ -236,6 +236,8 @@ nil, -- numtogive
 "allachivpotion", -- builder_tag
 "images/inventoryimages.xml", -- atlas
 "halloweenpotion_health_large.tex") -- image
+
+modimport("scripts/Achievement/tags_extension")
 
 --厨师能吃药水  给药水添加tag
 AddPrefabPostInit("halloweenpotion_health_large", function(inst)
@@ -307,44 +309,44 @@ nil, -- numtogive
 "winona_battery_high.tex",nil,"winona_battery_high")
 
 --活木
-AddRecipe("achiv_livinglog", {Ingredient(GLOBAL.CHARACTER_INGREDIENT.HEALTH, 20)}, RECIPETABS.WAR, TECH.NONE, 
-nil, --placer
-nil, -- min_spacing
-nil, -- nounlock
-nil, -- numtogive
-"achiveplantkin", -- builder_tag
-"images/inventoryimages.xml",
-"livinglog.tex",nil,"livinglog")
+-- AddRecipe("achiv_livinglog", {Ingredient(GLOBAL.CHARACTER_INGREDIENT.HEALTH, 20)}, RECIPETABS.WAR, TECH.NONE, 
+-- nil, --placer
+-- nil, -- min_spacing
+-- nil, -- nounlock
+-- nil, -- numtogive
+-- "achiveplantkin", -- builder_tag
+-- "images/inventoryimages.xml",
+-- "livinglog.tex",nil,"livinglog")
 
---荆棘甲
-AddRecipe("achiv_armor_bramble", {Ingredient("livinglog",2),Ingredient("boneshard",4)}, RECIPETABS.WAR, TECH.NONE, 
-nil, --placer
-nil, -- min_spacing
-nil, -- nounlock
-nil, -- numtogive
-"achiveplantkin", -- builder_tag
-"images/inventoryimages/achiv_armor_bramble.xml",
-"achiv_armor_bramble.tex",nil,"armor_bramble")
+-- --荆棘甲
+-- AddRecipe("achiv_armor_bramble", {Ingredient("livinglog",2),Ingredient("boneshard",4)}, RECIPETABS.WAR, TECH.NONE, 
+-- nil, --placer
+-- nil, -- min_spacing
+-- nil, -- nounlock
+-- nil, -- numtogive
+-- "achiveplantkin", -- builder_tag
+-- "images/inventoryimages/achiv_armor_bramble.xml",
+-- "achiv_armor_bramble.tex",nil,"armor_bramble")
 
---荆棘陷阱
-AddRecipe("achiv_trap_bramble", {Ingredient("livinglog",1),Ingredient("stinger",1)}, RECIPETABS.WAR, TECH.NONE, 
-nil, --placer
-nil, -- min_spacing
-nil, -- nounlock
-nil, -- numtogive
-"achiveplantkin", -- builder_tag
-"images/inventoryimages/achiv_trap_bramble.xml",
-"achiv_trap_bramble.tex",nil,"trap_bramble")
+-- --荆棘陷阱
+-- AddRecipe("achiv_trap_bramble", {Ingredient("livinglog",1),Ingredient("stinger",1)}, RECIPETABS.WAR, TECH.NONE, 
+-- nil, --placer
+-- nil, -- min_spacing
+-- nil, -- nounlock
+-- nil, -- numtogive
+-- "achiveplantkin", -- builder_tag
+-- "images/inventoryimages/achiv_trap_bramble.xml",
+-- "achiv_trap_bramble.tex",nil,"trap_bramble")
 
---肥料包
-AddRecipe("achiv_compostwrap", {Ingredient("poop",5),Ingredient("spoiled_food",2), Ingredient("nitre", 1)}, RECIPETABS.WAR, TECH.NONE, 
-nil, --placer
-nil, -- min_spacing
-nil, -- nounlock
-nil, -- numtogive
-"achiveplantkin", -- builder_tag
-"images/inventoryimages/achiv_compostwrap.xml",
-"achiv_compostwrap.tex",nil,"compostwrap")
+-- --肥料包
+-- AddRecipe("achiv_compostwrap", {Ingredient("poop",5),Ingredient("spoiled_food",2), Ingredient("nitre", 1)}, RECIPETABS.WAR, TECH.NONE, 
+-- nil, --placer
+-- nil, -- min_spacing
+-- nil, -- nounlock
+-- nil, -- numtogive
+-- "achiveplantkin", -- builder_tag
+-- "images/inventoryimages/achiv_compostwrap.xml",
+-- "achiv_compostwrap.tex",nil,"compostwrap")
 
 --灯泡
 AddRecipe("achiv_winter_ornament_light5", {Ingredient("spore_medium",5),Ingredient("goldnugget",3), Ingredient("transistor", 1)}, RECIPETABS.REFINE, TECH.NONE, 
@@ -451,12 +453,6 @@ local function _init_attribute_net_var(inst)
 	end
 end
 
--- local old_CanEntitySeeInStorm = _G.CanEntitySeeInStorm
--- print(old_CanEntitySeeInStorm,"===========================")
--- _G.CanEntitySeeInStorm = function(inst)
---     print(inst.components.achievementability.ignorestorm,"============")
---     return old_CanEntitySeeInStorm(inst) or inst.components.achievementability.ignorestorm
--- end
 
 local function SavePlayerOldData(inst)
     if inst.components.achievementability and inst.components.achievementmanager then

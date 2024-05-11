@@ -292,6 +292,7 @@ STRINGS.ACHIVABILITYNAME={
 ["goodman"] ="首领标签",
 ["fishmaster"] ="垂钓圣手",
 ["chopmaster"] ="砍树圣手",
+["goldminer"] = "黄金矿工",
 ["cookmaster"] ="烹饪大厨",
 ["pickmaster"] ="双倍采集",
 ["nomoist"] ="雨水免疫",
@@ -323,6 +324,9 @@ STRINGS.ACHIVABILITYNAME={
 ["moonstone"] = "月之祝福",
 ["moonaltar"] = "月球科技",
 ["timemanager"] = "时间管理",
+["alchemytechnology"] = "炼金科技",
+["lunaraligned"] = "月影忠臣",
+["shadowaligned"] = "暗影忠魂",
 }
 
 STRINGS.ACHIVABILITYDSPC={
@@ -340,6 +344,7 @@ STRINGS.ACHIVABILITYDSPC={
 ["goodman"] ="戴蜂王冠猪兔人蜘蛛狗的首领",
 ["fishmaster"] ="钓鱼时鱼立马上钩",
 ["chopmaster"] ="一下可砍倒树",
+["goldminer"] = "一下挖掉矿堆",
 ["cookmaster"] ="快速烹饪和厨师能力获得",
 ["pickmaster"] ="采集时双份产品",
 ["nomoist"] ="不会潮湿",
@@ -348,8 +353,8 @@ STRINGS.ACHIVABILITYDSPC={
 ["doubledrop"] ="击杀奖励多一份",
 ["buildmaster"] ="制造时材料消耗减半",
 ["refresh"] ="身上物品回复保鲜度",
-["reader"] ="可制作书和阅读书",
-["justicerain"] = "维克巴顿专属，多两本书",
+["reader"] ="可制作阅读书，含旧版园艺学",
+["justicerain"] = "维克巴顿专属，多三本书",
 ["supply"] ="可建造精确补给和鹿角",
 ["level"] ="人物升级可获得成就点",
 ["fastbuild"] ="快速建造和女工建筑",
@@ -371,6 +376,9 @@ STRINGS.ACHIVABILITYDSPC={
 ["moonstone"] = "可以制作月台",
 --["moonaltar"] = "可以月亮祭坛",
 ["timemanager"] = "成为时间管理大师，旺达能力",
+["alchemytechnology"] = "威尔逊的合成能力",
+["lunaraligned"] = "对月亮阵营防御+20%，对暗影阵营伤害+%20",
+["shadowaligned"] =  "对暗影阵营防御+20%，对月亮阵营伤害+%20",
 }
 
 STRINGS.ACHIEVEMENT_LIST =

@@ -90,6 +90,10 @@ AddModRPCHandler("DSTAchievement", "chopmaster", function(player)
 	player.components.achievementability:chopmastercoin(player)
 end)
 
+AddModRPCHandler("DSTAchievement", "goldminer", function(player)
+	player.components.achievementability:goldminercoin(player)
+end)
+
 AddModRPCHandler("DSTAchievement", "cookmaster", function(player)
 	player.components.achievementability:cookmastercoin(player)
 end)
@@ -194,6 +198,18 @@ end)
 
 AddModRPCHandler("DSTAchievement", "timemanager", function(player)
 	player.components.achievementability:timemanagercoin(player)
+end)
+
+AddModRPCHandler("DSTAchievement", "alchemytechnology", function(player)
+	player.components.achievementability:alchemytechnologycoin(player)
+end)
+
+AddModRPCHandler("DSTAchievement", "lunaraligned", function(player)
+	player.components.achievementability:lunaralignedcoin(player)
+end)
+
+AddModRPCHandler("DSTAchievement", "shadowaligned", function(player)
+	player.components.achievementability:shadowalignedcoin(player)
 end)
 
 AddModRPCHandler("DSTAchievement", "finishachievement", function(player,id)

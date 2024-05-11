@@ -745,6 +745,10 @@ end
 function achievementability:woodieabilitycoin(inst)
     if self.coinamount >= ability_cost["woodieability"].cost and self.woodieability == false and inst.prefab ~= "woodie" then
         self.woodieability = true
+        inst:AddTag("woodcarver1")
+        inst:AddTag("woodcarver2")
+        inst:AddTag("woodcarver3")
+        inst:AddTag("leifidolcrafter")
         inst:AddTag("werehuman")--伍迪的3个肉
         self:coinDoDelta(-ability_cost["woodieability"].cost)
         self:ongetcoin(inst)
@@ -1012,8 +1016,7 @@ end
 function achievementability:plantfriendfn(inst)
     if inst and  self.plantfriend and inst.prefab ~= "wormwood" then
         inst:AddTag("plantkin")
-        inst:AddTag("healonfertilize")
-        inst:AddTag("achiveplantkin")      
+        inst:AddTag("healonfertilize")     
         inst:ListenForEvent("deployitem", ondeployitem)
     end
     if inst.prefab ~= "wormwood" then 
@@ -1573,6 +1576,33 @@ function achievementability:chopmasterfn(inst)
             workable.workleft = 0
         end
     end)
+end
+
+function achievementability:goldminercoin(inst)
+    if self.goldminer ~= true and self.coinamount >= ability_cost["goldminer"].cost then
+        self.goldminer = true
+        self:coinDoDelta(-ability_cost["goldminer"].cost)
+        self:ongetcoin(inst)
+        self:goldminerfn(inst)
+    end
+end
+
+function achievementability:goldminerfn(inst)
+    if  inst.components.workmultiplier  == nil  then
+        inst:AddComponent("workmultiplier")
+    end
+    inst.components.workmultiplier:AddMultiplier(ACTIONS.MINE, 10, inst)
+    if  inst.components.efficientuser  == nil  then
+        inst:AddComponent("efficientuser")
+    end
+    inst.components.efficientuser:AddMultiplier(ACTIONS.MINE, 10, inst)
+end
+
+function achievementability:goldminerRemove(inst)
+    if self.goldminer then
+        inst.components.workmultiplier:RemoveMultiplier(ACTIONS.MINE, inst)
+        inst.components.efficientuser:RemoveMultiplier(ACTIONS.MINE, inst)
+    end
 end
 
 --烹调圣手获取
@@ -2914,6 +2944,36 @@ function achievementability:timemanagercoin(inst)
     end
 end
 
+function achievementability:alchemytechnologycoin(inst)
+    if self.alchemytechnology ~= true and self.coinamount >= ability_cost["alchemytechnology"].cost and inst.prefab ~= "wilson"  then
+        self.alchemytechnology = true
+        self:coinDoDelta(-ability_cost["alchemytechnology"].cost)
+        self:ongetcoin(inst)
+        self:alchemytechnologyfn()
+    end
+end
+
+
+function achievementability:lunaralignedcoin(inst)
+    if self.lunaraligned ~= true and self.coinamount >= ability_cost["lunaraligned"].cost and inst.prefab ~= "wilson"  then
+        self.lunaraligned = true
+        self:coinDoDelta(-ability_cost["lunaraligned"].cost)
+        self:ongetcoin(inst)
+        self:lunaralignedfn()
+    end
+end
+
+function achievementability:shadowalignedcoin(inst)
+    if self.shadowaligned ~= true and self.coinamount >= ability_cost["shadowaligned"].cost and inst.prefab ~= "wilson"  then
+        self.shadowaligned = true
+        self:coinDoDelta(-ability_cost["shadowaligned"].cost)
+        self:ongetcoin(inst)
+        self:shadowalignedfn()
+    end
+end
+
+
+
 local function CustomCombatDamage(inst, target, weapon, multiplier, mount)
     --return inst.components.combat.customdamagemultfn(inst, target, weapon, multiplier, mount) * 1.2 * (1 - inst.components.health.GetPercent() * 0.375 )
     return (inst.components.combat.old_customdamagemultfn and inst.components.combat.old_customdamagemultfn(inst, target, weapon, multiplier, mount) or 1) * 0.8333
@@ -2999,6 +3059,99 @@ function achievementability:timemanagerRemove()
             inst.components.inventory:DropItem(equip,true,true)
         end
         inst.components.combat.customdamagemultfn =  inst.components.combat.old_customdamagemultfn
+    end
+end
+
+function achievementability:alchemytechnologyfn()
+    local inst = self.inst
+    if self.alchemytechnology then
+        inst:AddTag("alchemist")
+        inst:AddTag("gem_alchemistI")
+        inst:AddTag("gem_alchemistII")
+        inst:AddTag("gem_alchemistIII")
+        inst:AddTag("ore_alchemistI")
+        inst:AddTag("ore_alchemistII")
+        inst:AddTag("ore_alchemistIII")
+        inst:AddTag("ick_alchemistI")
+        inst:AddTag("ick_alchemistII")
+        inst:AddTag("ick_alchemistIII")
+    end
+end
+
+
+function achievementability:alchemytechnologyRemove()
+    local inst = self.inst
+    if self.alchemytechnology then
+        inst:RemoveTag("alchemist")
+        inst:RemoveTag("gem_alchemistI")
+        inst:RemoveTag("gem_alchemistII")
+        inst:RemoveTag("gem_alchemistIII")
+        inst:RemoveTag("ore_alchemistI")
+        inst:RemoveTag("ore_alchemistII")
+        inst:RemoveTag("ore_alchemistIII")
+        inst:RemoveTag("ick_alchemistI")
+        inst:RemoveTag("ick_alchemistII")
+        inst:RemoveTag("ick_alchemistIII")
+    end
+end
+
+function achievementability:shadowalignedfn()
+    local inst = self.inst
+    if self.shadowaligned then
+        inst:AddTag("player_shadow_aligned")
+        local damagetyperesist = inst.components.damagetyperesist
+        if damagetyperesist then
+            damagetyperesist:AddResist("shadow_aligned", inst, 0.8, "achievementshadow")
+        end
+        local damagetypebonus = inst.components.damagetypebonus
+        if damagetypebonus then
+            damagetypebonus:AddBonus("lunar_aligned", inst, 1.2, "achievementshadow")
+        end
+    end
+end
+
+function achievementability:shadowalignedRemove()
+    local inst = self.inst
+    if self.shadowaligned then
+        inst:RemoveTag("player_shadow_aligned")
+        local damagetyperesist = inst.components.damagetyperesist
+        if damagetyperesist then
+            damagetyperesist:RemoveResist("shadow_aligned", inst, "achievementshadow")
+        end
+        local damagetypebonus = inst.components.damagetypebonus
+        if damagetypebonus then
+            damagetypebonus:RemoveBonus("lunar_aligned", inst, "achievementshadow")
+        end
+    end
+end
+
+function achievementability:lunaralignedfn()
+    local inst = self.inst
+    if self.lunaraligned then
+        inst:AddTag("player_lunar_aligned")
+        local damagetyperesist = inst.components.damagetyperesist
+        if damagetyperesist then
+            damagetyperesist:AddResist("lunar_aligned", inst, 0.8, "achievementlunar")
+        end
+        local damagetypebonus = inst.components.damagetypebonus
+        if damagetypebonus then
+            damagetypebonus:AddBonus("shadow_aligned", inst, 1.2, "achievementlunar")
+        end
+    end
+end
+
+function achievementability:lunaralignedRemove()
+    local inst = self.inst
+    if self.lunaraligned then
+        inst:RemoveTag("player_lunar_aligned")
+        local damagetyperesist = inst.components.damagetyperesist
+        if damagetyperesist then
+            damagetyperesist:RemoveResist("lunar_aligned", inst, "achievementlunar")
+        end
+        local damagetypebonus = inst.components.damagetypebonus
+        if damagetypebonus then
+            damagetypebonus:RemoveBonus("shadow_aligned", inst, "achievementlunar")
+        end
     end
 end
 
@@ -3180,6 +3333,10 @@ function achievementability:resetbuff(inst)
     end
     if inst.prefab ~= "woodie" then
         inst:RemoveTag("werehuman")
+        inst:RemoveTag("woodcarver1")
+        inst:RemoveTag("woodcarver2")
+        inst:RemoveTag("woodcarver3")
+        inst:RemoveTag("leifidolcrafter")
     end
 
     inst:RemoveTag("ancientstation")
@@ -3195,6 +3352,7 @@ function achievementability:resetbuff(inst)
 
     inst.components.builder.ingredientmod = 1
 
+    self:goldminerRemove()
     -- walter ability remove
     if inst.prefab ~= "walter" then
         inst.components.rider:Dismount()
@@ -3215,6 +3373,13 @@ function achievementability:resetbuff(inst)
     if inst.prefab ~= "wanda" then
         self:timemanagerRemove()
     end
+
+    if inst.prefab ~= "wilson" then
+        self:alchemytechnologyRemove()
+    end
+
+    self:lunaralignedRemove()
+    self:shadowalignedRemove()
 
     if inst.Oldpreferseating and inst.Oldcaneat and inst.components.eater then
         inst.components.eater:SetDiet(inst.Oldcaneat, inst.Oldpreferseating)
