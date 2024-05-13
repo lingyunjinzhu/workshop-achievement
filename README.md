@@ -1,3 +1,5 @@
+![Image text](https://github.com/lingyunjinzhu/workshop-achievement/blob/master/preview.jpg)
+
 # workshop-achievement
 Don't Starve Together Achievement Mod
 一个饥荒的成就mod，用来增长单个档的游戏时长，给后期一些事情做，同时在一个角色体验多个角色组合的能力，同时还有诸多隐藏成就
@@ -55,7 +57,5 @@ Don't Starve Together Achievement Mod
 |月之祝福|可建造月台|
 |月球科技|可以获得建造月球科技能力|
 |时间管理|旺达能力，建造使用各种表，但伤害不如旺达高 |
-
-![Image text](https://github.com/lingyunjinzhu/workshop-achievement/blob/master/preview.jpg)
 
 https://steamcommunity.com/sharedfiles/filedetails/?id=2139402585&searchtext=achivement
