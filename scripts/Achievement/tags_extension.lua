@@ -17,6 +17,7 @@ local tags_enum =
     "ick_alchemistII",
     "ick_alchemistIII",
     "skill_wilson_allegiance_shadow",
+    "skill_wilson_allegiance_lunar",
     "player_shadow_aligned",
     "player_lunar_aligned",
 
@@ -107,7 +108,6 @@ local tags_enum =
     "souleater",
 
     --wormwood
-    "plantkin",
     "self_fertilizable",
     "farmplantidentifier",
     "saplingcrafter",

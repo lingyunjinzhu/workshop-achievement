@@ -426,32 +426,32 @@ local no_drop_souls_tag =
 
 
 
-function achievementmanager:checkGetSoul(inst,data)
-    if inst.components.achievementability.soulhopcopy == true then
-      local victim = data.victim
-      local hassoul = true
-      for _,v in pairs(no_drop_souls_tag) do
-          if victim:HasTag(v) then
-              hassoul = false
-          end
-      end
-      if victim and hassoul and victim.components.combat ~= nil and victim.components.health ~= nil then
-          if  victim.nosoultask == nil and victim:IsValid() and  not inst.components.health:IsDead()  then
-              victim.nosoultask = victim:DoTaskInTime(5, OnRestoreSoul)
-              if inst.components.inventory and inst.components.inventory:Has("wortox_soul", 1) then
-                  SpawnSoulsAt(victim,((victim:HasTag("dualsoul") and 2) or (victim:HasTag("epic") and math.random(7, 8)) or 1) * (data.stackmult or 1))
-              else
-                  local soul = SpawnPrefab("wortox_soul")
-                  if soul.components.stackable ~= nil then
-                      soul.components.stackable:SetStackSize(((victim:HasTag("dualsoul") and 2) or (victim:HasTag("epic") and math.random(7, 8)) or 1) * (data.stackmult or 1))
-                  end
-                  inst.components.inventory:GiveItem(soul, nil, inst:GetPosition())
-                  CheckSoulsAdded(inst)
-              end
-          end
-      end
-  end
-end
+-- function achievementmanager:checkGetSoul(inst,data)
+--     if inst.components.achievementability.soulhopcopy == true then
+--       local victim = data.victim
+--       local hassoul = true
+--       for _,v in pairs(no_drop_souls_tag) do
+--           if victim:HasTag(v) then
+--               hassoul = false
+--           end
+--       end
+--       if victim and hassoul and victim.components.combat ~= nil and victim.components.health ~= nil then
+--           if  victim.nosoultask == nil and victim:IsValid() and  not inst.components.health:IsDead()  then
+--               victim.nosoultask = victim:DoTaskInTime(5, OnRestoreSoul)
+--               if inst.components.inventory and inst.components.inventory:Has("wortox_soul", 1) then
+--                   SpawnSoulsAt(victim,((victim:HasTag("dualsoul") and 2) or (victim:HasTag("epic") and math.random(7, 8)) or 1) * (data.stackmult or 1))
+--               else
+--                   local soul = SpawnPrefab("wortox_soul")
+--                   if soul.components.stackable ~= nil then
+--                       soul.components.stackable:SetStackSize(((victim:HasTag("dualsoul") and 2) or (victim:HasTag("epic") and math.random(7, 8)) or 1) * (data.stackmult or 1))
+--                   end
+--                   inst.components.inventory:GiveItem(soul, nil, inst:GetPosition())
+--                   CheckSoulsAdded(inst)
+--               end
+--           end
+--       end
+--   end
+-- end
 
 --新的开始
 function achievementmanager:intogamefn(inst)
@@ -1114,7 +1114,7 @@ end
 
 function achievementmanager:OnKilledCheck(inst, data)
     local victim = data.victim
-    self:checkGetSoul(inst,data)
+    -- self:checkGetSoul(inst,data)
     self:checkkill(inst,victim)
     self:_recentattack(inst,victim)
     self:check_kill_exp(inst,victim)
@@ -1123,7 +1123,7 @@ end
 function achievementmanager:OnKillAchievementCheck(inst)
     inst:ListenForEvent("killed", function (inst, data)
         local victim = data.victim
-        self:checkGetSoul(inst,data)
+        -- self:checkGetSoul(inst,data)
         self:checkkill(inst,victim)
         self:_recentattack(inst,victim)
         self:check_kill_exp(inst,victim)

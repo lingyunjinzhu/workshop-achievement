@@ -30,7 +30,7 @@ local achievement_ability_config = {
         {ability = "jump", cost = 50, default_value = false,canswitch = true,},
         {ability = "level", cost = 0, default_value = true,canswitch = true,},
         {ability = "fastbuild", cost = 50, default_value = false,},
-        {ability = "soulhopcopy", cost = 50, default_value = false,},
+        {ability = "soulhopcopy", cost = 55, default_value = false,},
         {ability = "morestrongstomach", cost = 25, default_value = false,},
         {ability = "shadowsubmissive", cost = 45, default_value = false,canswitch = true,},
         {ability = "eventtechnology", cost = 30, default_value = false,},

@@ -121,6 +121,8 @@ local achievementability = Class(function(self, inst)
         self.maxMoistureRate = math.pi
         self.absorb = math.pi
         self.damagemul = math.pi
+        self.healthlevel = math.pi
+        self.armorruinsadded = false
     end,
     nil,
     InitPropsTable())
@@ -128,20 +130,22 @@ local achievementability = Class(function(self, inst)
 function achievementability:onupdate()
     local inst = self.inst
     --血量上限
-    if self.healthmax ~= inst.components.health.maxhealth then
-
+    if self.healthlevel ~= self.healthup then
         local health_percent = inst.components.health:GetPercent()
         inst.components.health:SetMaxHealth(inst.components.health.maxhealth + self.healthup )
         inst.components.health:SetPercent(health_percent)
-        self.healthmax = inst.components.health.maxhealth
+        self.healthlevel = self.healthup
+    end
 
+    if self.armorruinsadded == false then
         if self.firmarmor == 1  and   inst.components.inventory then  
             local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
             if item ~= nil and item.prefab == "armorruins" then
                 local health_percent = inst.components.health:GetPercent()
                 inst.components.health:SetMaxHealth(inst.components.health.maxhealth + 100)
                 inst.components.health:SetPercent(health_percent)
-                self.healthmax = inst.components.health.maxhealth
+                self.armorruinsadded = true
+                --self.healthmax = inst.components.health.maxhealth
             end
         end
     end
@@ -270,7 +274,8 @@ function achievementability:healthupfn(inst,amount)
     local percent = inst.components.health:GetPercent()
     inst.components.health:SetMaxHealth(inst.components.health.maxhealth + delta)
     inst.components.health:SetPercent(percent)
-    self.healthmax = inst.components.health.maxhealth
+    self.healthlevel = self.healthup
+    --self.healthmax = inst.components.health.maxhealth
 end
 
 function achievementability:sanityupfn(inst, amount)
@@ -536,6 +541,65 @@ local function TryToPortalHop(inst, souls, consumeall)
 end
 
 
+--------------------------------------------------------------------------
+local wortox_soul_common = require("prefabs/wortox_soul_common")
+local function IsValidVictim(victim, explosive)
+    return wortox_soul_common.HasSoul(victim) and (victim.components.health:IsDead() or explosive)
+end
+
+local function OnRestoreSoul(victim)
+    victim.nosoultask = nil
+end
+
+local function OnEntityDropLoot(inst, data)
+    local victim = data.inst
+    if victim ~= nil and
+        victim.nosoultask == nil and
+        victim:IsValid() and
+        (   victim == inst or
+            (   not inst.components.health:IsDead() and
+                IsValidVictim(victim, data.explosive) and
+                inst:IsNear(victim, TUNING.WORTOX_SOULEXTRACT_RANGE)
+            )
+        ) then
+        --V2C: prevents multiple Wortoxes in range from spawning multiple souls per corpse
+        victim.nosoultask = victim:DoTaskInTime(5, OnRestoreSoul)
+        wortox_soul_common.SpawnSoulsAt(victim, wortox_soul_common.GetNumSouls(victim))
+    end
+end
+
+local function OnEntityDeath(inst, data)
+    if data.inst ~= nil then
+        data.inst._soulsource = data.afflicter -- Mark the victim.
+        if (data.inst.components.lootdropper == nil or data.inst.components.lootdropper.forcewortoxsouls or data.explosive) then -- NOTES(JBK): Explosive entities do not drop loot.
+            OnEntityDropLoot(inst, data)
+        end
+    end
+end
+
+local function OnHarvestTrapSouls(inst, data)
+    if (data.numsouls or 0) > 0 then
+        wortox_soul_common.GiveSouls(inst, data.numsouls, data.pos or inst:GetPosition())
+    end
+end
+
+local function OnMurdered(inst, data)
+    if data.incinerated then
+        return -- NOTES(JBK): Do not give souls for this.
+    end
+    local victim = data.victim
+    if victim ~= nil and
+        victim.nosoultask == nil and
+        victim:IsValid() and
+        (   not inst.components.health:IsDead() and
+            wortox_soul_common.HasSoul(victim)
+        ) then
+        --V2C: prevents multiple Wortoxes in range from spawning multiple souls per corpse
+        victim.nosoultask = victim:DoTaskInTime(5, OnRestoreSoul)
+        wortox_soul_common.GiveSouls(inst, wortox_soul_common.GetNumSouls(victim) * (data.stackmult or 1), inst:GetPosition())
+    end
+end
+
 --灵魂跳跃  
 function achievementability:soulhopcopycoin(inst)
     if self.soulhopcopy ~= true and self.coinamount >= ability_cost["soulhopcopy"].cost and inst.prefab ~= "wortox" then
@@ -564,13 +628,59 @@ function achievementability:soulhopcopyfn(inst)
         if inst.FinishPortalHop == nil then
             inst.FinishPortalHop = FinishPortalHop
         end
-        inst:DoPeriodicTask(0.1, function()
-            if inst.components.playeractionpicker ~= nil and self.soulhopcopy then
-                inst.components.playeractionpicker.pointspecialactionsfn = GetPointSpecialActions
-            end
-        end)
+        if inst._onentitydroplootfn == nil then
+            inst._onentitydroplootfn = function(src, data)
+                OnEntityDropLoot(inst, data)
+             end
+            inst:ListenForEvent("entity_droploot", inst._onentitydroplootfn, TheWorld)
+        else
+            inst._onentitydroplootfnOld = inst._onentitydroplootfn 
+            inst._onentitydroplootfn = function(src, data)
+                inst._onentitydroplootfnOld(inst, data)
+                OnEntityDropLoot(inst, data)
+             end
+        end
+        if inst._onentitydeathfn == nil then
+            inst._onentitydeathfn = function(src, data) OnEntityDeath(inst, data) end
+            inst:ListenForEvent("entity_death", inst._onentitydeathfn, TheWorld)
+        else
+            inst._onentitydeathfnOld = inst._onentitydeathfn
+            inst._onentitydeathfn = function(src, data) 
+                inst._onentitydeathfnOld(inst, data)
+                OnEntityDeath(inst, data) end
+            inst:ListenForEvent("entity_death", inst._onentitydeathfn, TheWorld)
+        end
+        inst:ListenForEvent("murdered", OnMurdered)
+        inst:ListenForEvent("harvesttrapsouls", OnHarvestTrapSouls)
     end
 end
+
+function achievementability:soulhopcopyRemove(inst)
+    if self.soulhopcopy == true then
+        if inst._onentitydroplootfn ~= nil then
+            inst:RemoveEventCallback("entity_droploot", inst._onentitydroplootfn, TheWorld)
+            inst._onentitydroplootfn = nil
+        end
+        if inst._onentitydroplootfnOld ~= nil then
+            inst._onentitydroplootfn = inst._onentitydroplootfnOld
+            inst:ListenForEvent("entity_droploot", inst._onentitydroplootfn, TheWorld)
+        end
+
+        if inst._onentitydeathfn ~= nil then
+            inst:RemoveEventCallback("entity_death", inst._onentitydeathfn, TheWorld)
+            inst._onentitydeathfn = nil
+        end
+
+        if inst._onentitydeathfnOld ~= nil then
+            inst._onentitydeathfn = inst._onentitydeathfnOld
+            inst:ListenForEvent("entity_death", inst._onentitydeathfn, TheWorld)
+        end
+        inst:RemoveEventCallback("murdered", OnMurdered)
+        inst:RemoveEventCallback("harvesttrapsouls", OnHarvestTrapSouls)
+    end
+end
+
+
 --升级
 function achievementability:levelcoin(inst)
     if   self.level  then
@@ -706,13 +816,14 @@ end
 --装备铥甲+100HP
 function achievementability:firmarmorfn(inst)
     if self.firmarmor == 1  and inst.components.inventory then  
-            local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
-            if item ~= nil and item.prefab == "armorruins" then
-                local health_percent = inst.components.health:GetPercent()
-                inst.components.health:SetMaxHealth(inst.components.health.maxhealth + 100)
-                inst.components.health:SetPercent(health_percent)
-                self.healthmax = inst.components.health.maxhealth
-            end
+        local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
+        if item ~= nil and item.prefab == "armorruins" then
+            local health_percent = inst.components.health:GetPercent()
+            inst.components.health:SetMaxHealth(inst.components.health.maxhealth + 100)
+            inst.components.health:SetPercent(health_percent)
+            self.armorruinsadded = true
+            --self.healthmax = inst.components.health.maxhealth
+        end
     end  
     if inst.firmarmorEvent == nil then
         inst.firmarmorEvent = true
@@ -724,7 +835,8 @@ function achievementability:firmarmorfn(inst)
                 local health_percent = inst.components.health:GetPercent()
                 inst.components.health:SetMaxHealth(inst.components.health.maxhealth + 100)
                 inst.components.health:SetPercent(health_percent)
-                self.healthmax = inst.components.health.maxhealth
+                self.armorruinsadded = true
+                --self.healthmax = inst.components.health.maxhealth
             end
         end)
         inst:ListenForEvent("unequip", function(inst, data)
@@ -735,7 +847,8 @@ function achievementability:firmarmorfn(inst)
                 local health_percent = inst.components.health:GetPercent()
                 inst.components.health:SetMaxHealth(inst.components.health.maxhealth - 100)
                 inst.components.health:SetPercent(health_percent)
-                self.healthmax = inst.components.health.maxhealth
+                self.armorruinsadded = false
+                --self.healthmax = inst.components.health.maxhealth
             end
         end)
     end
@@ -2868,9 +2981,7 @@ function achievementability:fearlessfn(inst)
         --     inst:ListenForEvent("onhitother", Wolfgang_OnHitOther)
         -- end
     else
-        if inst.prefab ~= "walter" then
-            inst:RemoveTag("pebblemaker")
-        end
+
     end
 end
 
@@ -3075,6 +3186,8 @@ function achievementability:alchemytechnologyfn()
         inst:AddTag("ick_alchemistI")
         inst:AddTag("ick_alchemistII")
         inst:AddTag("ick_alchemistIII")
+        inst:AddTag("skill_wilson_allegiance_shadow")
+        inst:AddTag("skill_wilson_allegiance_lunar")
     end
 end
 
@@ -3092,6 +3205,8 @@ function achievementability:alchemytechnologyRemove()
         inst:RemoveTag("ick_alchemistI")
         inst:RemoveTag("ick_alchemistII")
         inst:RemoveTag("ick_alchemistIII")
+        inst:RemoveTag("skill_wilson_allegiance_shadow")
+        inst:RemoveTag("skill_wilson_allegiance_lunar")
     end
 end
 
@@ -3282,7 +3397,7 @@ function achievementability:resetbuff(inst)
         inst:RemoveTag("healonfertilize")
         inst.planttask = nil
     end
-    inst:RemoveTag("achiveplantkin")
+    --inst:RemoveTag("achiveplantkin")
 
     --移除厨师的能力
     if inst.prefab ~= "warly" then
@@ -3352,7 +3467,7 @@ function achievementability:resetbuff(inst)
 
     inst.components.builder.ingredientmod = 1
 
-    self:goldminerRemove()
+    self:goldminerRemove(inst)
     -- walter ability remove
     if inst.prefab ~= "walter" then
         inst.components.rider:Dismount()
@@ -3392,6 +3507,11 @@ function achievementability:resetbuff(inst)
         end
         inst:AddComponent("foodmemory")
     end
+
+    if inst.prefab ~= "wortox" then
+        self:soulhopcopyRemove(inst)
+    end
+
 end
 
 local function SaveForReroll(inst)
@@ -3449,6 +3569,22 @@ function achievementability:OnInitSpecialAbility()
 end
 
 
+function achievementability:dealSpecialTags(inst)
+    if not self.fearless then
+        if inst.prefab ~= "walter" then
+            inst:RemoveTag("pebblemaker")
+            inst:RemoveTag("slingshot_sharpshooter")
+        end
+    end 
+    if not self.timemanager then
+        if inst.prefab ~= "wanda" then
+            inst:RemoveTag("clockmaker")
+            inst:RemoveTag("pocketwatchcaster")
+        end
+    end
+    
+end
+
 function achievementability:OnLoadedPost()
     local inst = self.inst
     for _,v in pairs(achievement_ability_config.id2ability) do
@@ -3460,7 +3596,7 @@ function achievementability:OnLoadedPost()
             end
         end
     end
-
+    self:dealSpecialTags(inst)
     for key,v in pairs(achievement_ability_config.attributes_cost) do
         if self[key] and self[key] > 0  then
             local func = key .. "fn"

@@ -1,5 +1,5 @@
--- GLOBAL.CHEATS_ENABLED = true
--- GLOBAL.require( 'debugkeys' )
+GLOBAL.CHEATS_ENABLED = true
+GLOBAL.require( 'debugkeys' )
 GLOBAL.setmetatable(env, {
     __index = function(t, k)
         return GLOBAL.rawget(GLOBAL, k)
@@ -588,7 +588,7 @@ AddPlayerPostInit(function(inst)
             if self.pethealthbadge ~= nil and self.onpethealthdirty == nil then
                 self.onpethealthdirty = function() self:RefreshPetHealth2() end
                 inst:ListenForEvent("clientpethealthdirty", self.onpethealthdirty, self.owner)
-                inst:ListenForEvent("clientpethealthsymboldirty", self.onpethealthdirty, self.owner)
+                inst:ListenForEvent("clientpethealthsymboldirty",  self.onpethealthdirty, self.owner)
                 inst:ListenForEvent("clientpetmaxhealthdirty", self.onpethealthdirty, self.owner)
                 inst:ListenForEvent("clientpethealthpulsedirty", self.onpethealthdirty, self.owner)
                 inst:ListenForEvent("clientpethealthstatusdirty", self.onpethealthdirty, self.owner)
@@ -598,25 +598,22 @@ AddPlayerPostInit(function(inst)
     end)
 
     if inst.prefab ~= "wortox" then
-    	inst:DoPeriodicTask(0.1, function()
-        	if inst.replica.inventory and inst.replica.inventory:Has("wortox_soul", 1) then
-            	inst:AddTag("soulstealer")
-                inst.CanSoulhop = CanSoulhop
-        	else
-            	inst:RemoveTag("soulstealer")
-                inst.CanSoulhop = nil
-        	end    
-        	if inst.components.playeractionpicker ~= nil  then
-            	inst.components.playeractionpicker.pointspecialactionsfn = GetPointSpecialActions
-        	end
-    	end)
+        local function OnSetOwner(inst)
+            if inst.components.playeractionpicker ~= nil then
+                inst.components.playeractionpicker.pointspecialactionsfn = GetPointSpecialActions
+            end
+        end
+        inst:AddTag("soulstealer")
+        inst.CanSoulhop = CanSoulhop
+        inst:ListenForEvent("setowner", OnSetOwner)
     end
     if inst.prefab ~= "walter" then
-        inst:AddTag("pebblemaker")
+        --inst:AddTag("pebblemaker")
+        inst:AddTag("slingshot_sharpshooter")
     end
 
     if inst.prefab ~= "wanda" then
-        --inst:AddTag("clockmaker")
+        inst:AddTag("pocketwatchcaster")
     end
     if inst.OnNewSpawn then
         local function OnPlayerNewSpawn(inst)
@@ -760,7 +757,7 @@ local abigail_kill = function(inst, data)
     if leader and  leader.components.achievementability.level == true  and leader:HasTag("player") then
         if data.victim and data.victim.components.combat and leader.achivhaskill == nil then 
             leader.components.achievementability:calc_killamount(leader,data)
-            leader.components.achievementmanager:checkGetSoul(leader, data)
+            --leader.components.achievementmanager:checkGetSoul(leader, data)
             leader.components.achievementmanager:checkkill(leader,data.victim)
             leader.components.achievementmanager:check_kill_exp(leader,data.victim)
         end 
